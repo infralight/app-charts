@@ -22,7 +22,8 @@ nodeSelector: {}
 tolerations: {}
 
 service:
-  type: NodePort
+  create: true
+  type: ClusterIP
   servicePort: 7500
 
 resources:
