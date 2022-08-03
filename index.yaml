@@ -2,6 +2,15 @@ apiVersion: v1
 entries:
   app-template:
   - apiVersion: v2
+    created: "2022-08-03T09:46:49.422055942Z"
+    description: app-template
+    digest: 59967273191e43e81f9b2a2e8ea197fe694cc575f520c5a75cf292bd7f74e122
+    name: app-template
+    type: application
+    urls:
+    - https://github.com/infralight/app-charts/releases/download/app-template-0.0.4/app-template-0.0.4.tgz
+    version: 0.0.4
+  - apiVersion: v2
     created: "2022-08-03T09:32:08.756778629Z"
     description: app-template
     digest: d4d73bbb9885c337ffe8be0bbb3ece9b1a934b364ce1c33653634554fd7bc239
@@ -28,4 +37,4 @@ entries:
     urls:
     - https://github.com/infralight/app-charts/releases/download/app-template-0.0.1/app-template-0.0.1.tgz
     version: 0.0.1
-generated: "2022-08-03T09:32:08.756789529Z"
+generated: "2022-08-03T09:46:49.422073742Z"
