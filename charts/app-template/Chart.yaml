@@ -1,0 +1,5 @@
+apiVersion: v2
+name: app-template
+description: 'app-template'
+type: application
+version: 0.0.1

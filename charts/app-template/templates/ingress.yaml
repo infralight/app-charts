@@ -1,0 +1,43 @@
+{{- if eq .Values.ingress.create -}}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port":
+      "443", "StatusCode": "HTTP_301"}}'
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.cert }}
+    alb.ingress.kubernetes.io/healthcheck-path: /api/albhealthcheck
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/success-codes: 200,204
+    alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=180
+{{- if eq .Values.waf.create -}}
+    alb.ingress.kubernetes.io/wafv2-acl-arn: {{ .Values.ingress.waf.arn }}
+{{- end -}}
+    external-dns.alpha.kubernetes.io/hostname: {{ .Values.ingress.dns }}
+    kubernetes.io/ingress.class: alb
+    kubernetes.io/tls-acme: 'true'
+  labels:
+    app.kubernetes.io/instance: {{ .Values.appName }}
+    app.kubernetes.io/name: {{ .Values.appName }}
+  name: {{ .Values.appName }}-ingress
+  namespace: {{ .Values.namespace }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.dns }}
+    http:
+      paths:
+      - backend:
+          service:
+            name: {{ .Values.appName }}-service
+            port:
+              number: {{ .Values.servicePort }}
+        path: /*
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - {{ .Values.ingress.dns }}
+    secretName: {{ .Values.appName }}-tls
+{{- end -}}
