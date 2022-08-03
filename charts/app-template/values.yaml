@@ -3,6 +3,8 @@ namespace: k8s-api
 
 ingress:
   create: true
+  schema: internet-facing
+  timeout: idle_timeout.timeout_seconds=180
   cert: arn:aws:acm:us-west-2:094724549126:certificate/cadb5473-b949-4eed-8630-118853f64bd9
   dns: k8s-api.stag.external.api.infralight.cloud
   waf:
@@ -19,15 +21,17 @@ serviceAccount:
 nodeSelector: {}
 tolerations: {}
 
-servicePort: 7500
+service:
+  type: NodePort
+  servicePort: 7500
 
 resources:
   limits:
-    cpu: 500m
-    memory: 400Mi
+    cpu: 150m
+    memory: 100Mi
   requests:
     cpu: 100m
-    memory: 200Mi
+    memory: 50Mi
 
 tag: latest
 region: us-west-2

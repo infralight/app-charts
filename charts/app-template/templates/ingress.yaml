@@ -1,4 +1,4 @@
-{{- if eq .Values.ingress.create -}}
+{{- if and (.Values.ingress.create) (eq .Values.service.type "NodePort") -}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -10,12 +10,12 @@ metadata:
     alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.cert }}
     alb.ingress.kubernetes.io/healthcheck-path: /api/albhealthcheck
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
-    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/scheme: {{ .Values.ingress.schema }}
     alb.ingress.kubernetes.io/success-codes: 200,204
-    alb.ingress.kubernetes.io/load-balancer-attributes: idle_timeout.timeout_seconds=180
-{{- if eq .Values.waf.create -}}
+    alb.ingress.kubernetes.io/load-balancer-attributes: {{ .Values.ingress.timeout }}
+{{- if .Values.ingress.waf.create }}
     alb.ingress.kubernetes.io/wafv2-acl-arn: {{ .Values.ingress.waf.arn }}
-{{- end -}}
+{{- end }}
     external-dns.alpha.kubernetes.io/hostname: {{ .Values.ingress.dns }}
     kubernetes.io/ingress.class: alb
     kubernetes.io/tls-acme: 'true'
@@ -33,7 +33,7 @@ spec:
           service:
             name: {{ .Values.appName }}-service
             port:
-              number: {{ .Values.servicePort }}
+              number: {{ .Values.service.servicePort }}
         path: /*
         pathType: ImplementationSpecific
   tls:

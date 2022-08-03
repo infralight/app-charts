@@ -10,10 +10,12 @@ spec:
   ports:
     - name: http
       protocol: TCP
-      port: {{ .Values.servicePort }}
-      targetPort: {{ .Values.servicePort }}
+      port: {{ .Values.service.servicePort }}
+      targetPort: {{ .Values.service.servicePort }}
   selector:
     app.kubernetes.io/name: {{ .Values.appName }}
-  type: NodePort
+  type: {{ .Values.service.type }}
   sessionAffinity: None
+{{- if eq .Values.service.type "NodePort" }}
   externalTrafficPolicy: Cluster
+{{- end }}
