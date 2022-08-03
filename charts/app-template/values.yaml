@@ -26,6 +26,9 @@ service:
   type: ClusterIP
   servicePort: 7500
 
+clusterRole:
+  create: true
+
 resources:
   limits:
     cpu: 150m
