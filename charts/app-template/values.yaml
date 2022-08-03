@@ -27,7 +27,7 @@ service:
   servicePort: 7500
 
 clusterRole:
-  create: true
+  create: false
 
 resources:
   limits:
