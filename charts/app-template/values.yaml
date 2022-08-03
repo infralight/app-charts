@@ -29,13 +29,7 @@ service:
 clusterRole:
   create: false
 
-resources:
-  limits:
-    cpu: 150m
-    memory: 100Mi
-  requests:
-    cpu: 100m
-    memory: 50Mi
+resources: {}
 
 tag: latest
 region: us-west-2
