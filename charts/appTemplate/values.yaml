@@ -1,0 +1,44 @@
+replicas: 1
+namespace: default
+
+ingress:
+  create: true
+  schema: internet-facing
+  timeout: idle_timeout.timeout_seconds=180
+#  cert: arn:aws:acm:us-west-2:000000000000:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+  dns: app-name.domain
+  waf:
+    create: true
+#    arn: 'arn:aws:wafv2:us-west-2:000000000000:regional/webacl/backend-waf/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+
+serviceAccount:
+  create: true
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::000000000000:role/app-role"
+  name: "sa-name"
+
+
+nodeSelector: {}
+tolerations: {}
+
+service:
+  create: true
+  type: ClusterIP
+  servicePort: 7500
+
+clusterRole:
+  create: false
+
+role:
+  create: false
+  rules: {}
+
+
+resources: {}
+
+
+
+tag: latest
+region: us-west-2
+ecr: 000000000000.dkr.ecr
+appName: app-name

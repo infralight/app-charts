@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.appName }}-service
+  namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/instance: {{ .Values.appName }}
+    app.kubernetes.io/name: {{ .Values.appName }}
+spec:
+  ports:
+    - name: http
+      protocol: TCP
+      port: {{ .Values.service.servicePort }}
+      targetPort: {{ .Values.service.servicePort }}
+  selector:
+    app.kubernetes.io/name: {{ .Values.appName }}
+  type: {{ .Values.service.type }}
+  sessionAffinity: None
+{{- if eq .Values.service.type "NodePort" }}
+  externalTrafficPolicy: Cluster
+{{- end }}
