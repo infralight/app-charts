@@ -4,5 +4,5 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ .Values.appName }}
 rules:
-  {{ .Values.role.rules | toYaml . | indent 2}}
+  {{-  toYaml .Values.role.rules | nindent 2}}
 {{- end }}
