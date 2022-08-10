@@ -22,7 +22,7 @@ nodeSelector: {}
 tolerations: {}
 
 service:
-  create: true
+  create: false
   type: ClusterIP
   servicePort: 7500
 
