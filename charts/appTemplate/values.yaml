@@ -4,8 +4,8 @@ namespace: default
 ingress:
   create: true
   schema: internet-facing
-  success-codes: 200,204
-  healthcheck-path: /
+  successcodes: 200,204
+  healthcheckpath: /
   timeout: idle_timeout.timeout_seconds=180
 #  cert: arn:aws:acm:us-west-2:000000000000:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
   dns: app-name.domain
