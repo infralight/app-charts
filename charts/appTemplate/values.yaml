@@ -13,8 +13,7 @@ ingress:
 
 serviceAccount:
   create: true
-  annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::000000000000:role/app-role"
+  role: ""
   name: "sa-name"
 
 
@@ -36,8 +35,8 @@ role:
 
 resources: {}
 
-
-
+env: ""
+account: ""
 tag: latest
 region: us-west-2
 ecr: 000000000000.dkr.ecr
