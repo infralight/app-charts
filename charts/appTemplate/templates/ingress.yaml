@@ -8,10 +8,10 @@ metadata:
       "443", "StatusCode": "HTTP_301"}}'
     alb.ingress.kubernetes.io/backend-protocol: HTTP
     alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.cert }}
-    alb.ingress.kubernetes.io/healthcheck-path: /api/albhealthcheck
+    alb.ingress.kubernetes.io/healthcheck-path: {{ .Values.ingress.healthcheckpath }}
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
     alb.ingress.kubernetes.io/scheme: {{ .Values.ingress.schema }}
-    alb.ingress.kubernetes.io/success-codes: 200,204
+    alb.ingress.kubernetes.io/success-codes: {{ .Values.ingress.successcodes }}
     alb.ingress.kubernetes.io/load-balancer-attributes: {{ .Values.ingress.timeout }}
 {{- if .Values.ingress.waf.create }}
     alb.ingress.kubernetes.io/wafv2-acl-arn: {{ .Values.ingress.waf.arn }}
