@@ -1,5 +1,6 @@
 replicas: 1
 namespace: default
+bucketPrefix: ""
 
 ingress:
   create: true
@@ -33,8 +34,13 @@ clusterRole:
 role:
   create: false
   rules: {}
-
-
+auth0:
+  fireflyDomain: ""
+  providerDomain: ""
+elastic:
+  url: ""
+vault:
+  url: ""
 resources: {}
 
 env: ""
