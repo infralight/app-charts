@@ -39,6 +39,15 @@ entries:
     version: 0.0.1
   appTemplate:
   - apiVersion: v2
+    created: "2023-01-16T12:31:46.015477937Z"
+    description: appTemplate
+    digest: 3d76bf2fb1abba6feed3d901c4e75c9efdc4f2a286b7549eda6b68793fef1ed8
+    name: appTemplate
+    type: application
+    urls:
+    - https://github.com/infralight/app-charts/releases/download/appTemplate-0.0.12/appTemplate-0.0.12.tgz
+    version: 0.0.12
+  - apiVersion: v2
     created: "2023-01-14T18:42:01.565966329Z"
     description: appTemplate
     digest: e0615eb29578cfcc116d528c6b4cb2c9df8f5d0c5597302ab324242ec95c99f7
@@ -110,4 +119,4 @@ entries:
     urls:
     - https://github.com/infralight/app-charts/releases/download/appTemplate-0.0.4/appTemplate-0.0.4.tgz
     version: 0.0.4
-generated: "2023-01-14T18:42:01.566007829Z"
+generated: "2023-01-16T12:31:46.015522037Z"
