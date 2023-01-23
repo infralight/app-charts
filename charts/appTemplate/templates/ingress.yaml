@@ -19,7 +19,7 @@ metadata:
     {{- if .Values.ingress.waf.create }}
     alb.ingress.kubernetes.io/wafv2-acl-arn: {{ .Values.ingress.waf.arn }}
     {{- end }}
-    external-dns.alpha.kubernetes.io/hostname: {{ .Values.ingress.dns }}
+    external-dns.alpha.kubernetes.io/hostname: {{ .Values.ingress.dns }}.{{ .Values.domain }}
     kubernetes.io/ingress.class: alb
     kubernetes.io/tls-acme: 'true'
   labels:
@@ -29,7 +29,7 @@ metadata:
   namespace: {{ .Values.namespace }}
 spec:
   rules:
-  - host: {{ .Values.ingress.dns }}
+  - host: {{ .Values.ingress.dns }}.{{ .Values.domain }}
     http:
       paths:
       - backend:
@@ -41,6 +41,6 @@ spec:
         pathType: ImplementationSpecific
   tls:
   - hosts:
-    - {{ .Values.ingress.dns }}
+    - {{ .Values.ingress.dns }}.{{ .Values.domain }}
     secretName: {{ .Values.appName }}-tls
 {{- end -}}
