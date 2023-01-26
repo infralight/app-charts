@@ -25,11 +25,7 @@ spec:
 {{- toYaml .Values.tolerations | nindent 10 }}
 {{- end }}
       containers:
-{{- if .Values.image_override }}      
-      - image: "{{ .Values.ecr }}.{{ .Values.region }}.amazonaws.com/{{ .Values.appName }}:{{ .Values.tag }}"
-{{- else }}
-      - image: "{{ .Values.image_override }}"
-{{- end }}      
+      - image: "{{ trimPrefix "_" .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.appName }}:{{ .Values.tag }}"
         envFrom:
           - configMapRef:
               name: {{ .Values.appName }}-config-map
