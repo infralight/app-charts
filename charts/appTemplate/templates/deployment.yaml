@@ -15,7 +15,9 @@ spec:
         app.kubernetes.io/instance: {{ .Values.appName }}
         app.kubernetes.io/name: {{ .Values.appName }}
     spec:
+    {{- if .Values.serviceAccount.create -}}
       serviceAccountName: {{ .Values.serviceAccount.name }}
+    {{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
 {{- toYaml .Values.nodeSelector | nindent 10 }}
