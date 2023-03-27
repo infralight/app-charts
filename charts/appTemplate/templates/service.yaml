@@ -1,4 +1,4 @@
-{{- if .Values.service.create -}}
+{{- if eq .Values.service.create "true" -}}
 ---
 apiVersion: v1
 kind: Service
