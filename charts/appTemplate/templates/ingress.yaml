@@ -1,4 +1,4 @@
-{{- if and (.Values.ingress.create) (eq .Values.service.type "NodePort") -}}
+{{- if and (eq .Values.ingress.create "true") (eq .Values.service.type "NodePort") -}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -16,7 +16,7 @@ metadata:
     {{- if eq .Values.ingress.schema "internal" }}
     alb.ingress.kubernetes.io/inbound-cidrs: {{ .Values.cidrs }}
     {{- end }}
-    {{- if .Values.ingress.waf.create }}
+    {{- if eq .Values.ingress.waf.create "true" }}
     alb.ingress.kubernetes.io/wafv2-acl-arn: {{ .Values.ingress.waf.arn }}
     {{- end }}
     external-dns.alpha.kubernetes.io/hostname: {{ .Values.ingress.dns }}.{{ .Values.domain }}

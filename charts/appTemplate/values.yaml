@@ -5,7 +5,7 @@ bucketPrefix: ""
 cidrs: "127.0.0.1/8"
 
 ingress:
-  create: true
+  create: "true"
   schema: internal
   successcodes: 200,204
   healthcheckpath: /
@@ -13,11 +13,11 @@ ingress:
 #  cert: arn:aws:acm:us-west-2:000000000000:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
   dns: 'app'
   waf:
-    create: false
+    create: "false"
 #    arn: 'arn:aws:wafv2:us-west-2:000000000000:regional/webacl/backend-waf/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
 
 serviceAccount:
-  create: true
+  create: "true"
   role: ""
   name: "sa-name"
 
@@ -26,15 +26,15 @@ nodeSelector: {}
 tolerations: {}
 
 service:
-  create: false
+  create: "false"
   type: NodePort
   servicePort: 7500
 
 clusterRole:
-  create: false
+  create: "false"
 
 role:
-  create: false
+  create: "false"
   rules: {}
 auth0:
   fireflyDomain: ""
