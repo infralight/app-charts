@@ -13,7 +13,7 @@ spec:
     - name: http
       protocol: TCP
       port: {{ .Values.service.servicePort }}
-      targetPort: {{ .Values.service.servicePort }}
+      targetPort: {{ .Values.service.targetPort }}
   selector:
     app.kubernetes.io/name: {{ .Values.appName }}
   type: {{ .Values.service.type }}
