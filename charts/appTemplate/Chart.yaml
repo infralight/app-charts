@@ -2,4 +2,4 @@ apiVersion: v2
 name: appTemplate
 description: 'appTemplate'
 type: application
-version: 0.0.20
+version: 0.0.21

@@ -29,6 +29,7 @@ service:
   create: "false"
   type: NodePort
   servicePort: 7500
+  targetPort: 80
 
 clusterRole:
   create: "false"
