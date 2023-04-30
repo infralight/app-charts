@@ -34,5 +34,13 @@ spec:
           - secretRef:
               name: {{ .Values.appName }}-secrets
         name: {{ .Values.appName }}-server
+{{- if .Values.readinessProbe }}
+        readinessProbe:
+{{- toYaml .Values.readinessProbe | nindent 10 }}
+{{- end }}
+{{- if .Values.livenessProbe }}
+        livenessProbe:
+{{- toYaml .Values.livenessProbe | nindent 10 }}
+{{- end }}
         resources:
 {{- toYaml .Values.resources | nindent 10 }}

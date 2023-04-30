@@ -24,6 +24,18 @@ serviceAccount:
 
 nodeSelector: {}
 tolerations: {}
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+    scheme: HTTP
+  initialDelaySeconds: 60
+  timeoutSeconds: 5
+  periodSeconds: 10
+  successThreshold: 1
+  failureThreshold: 5
+
+readinessProbe: {}
 
 service:
   create: "false"
