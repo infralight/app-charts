@@ -24,6 +24,9 @@ serviceAccount:
 
 nodeSelector: {}
 tolerations: {}
+livenessProbe: {}
+
+readinessProbe: {}
 
 service:
   create: "false"
