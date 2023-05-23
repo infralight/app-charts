@@ -27,7 +27,7 @@ spec:
 {{- toYaml .Values.tolerations | nindent 10 }}
 {{- end }}
       containers:
-      - image: "{{ trimPrefix "_" .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.ecrAppName | ternary .Values.ecrAppName .Values.appName }}:{{ .Values.tag }}"
+      - image: "{{ trimPrefix "_" .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ if .Values.ecrAppName | ternary .Values.ecrAppName .Values.appName }}:{{ .Values.tag }}"
         envFrom:
           - configMapRef:
               name: {{ .Values.appName }}-config-map
