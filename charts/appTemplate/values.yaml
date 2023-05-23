@@ -57,3 +57,4 @@ region: us-west-2
 image_override: busybox
 ecr: 000000000000.dkr.ecr
 appName: app-name
+ecrAppName: ecr-app-name
