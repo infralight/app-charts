@@ -11,6 +11,10 @@ spec:
       app.kubernetes.io/name: {{ .Values.appName }}
   template:
     metadata:
+      annotations:
+        {{- if .Values.autoReloadConfig }}
+        checksum/configuration: {{ include (print $.Template.BasePath "/" .Values.configmapName ".yaml" ) . | sha256sum }}
+        {{- end }}
       labels:
         app.kubernetes.io/instance: {{ .Values.appName }}
         app.kubernetes.io/name: {{ .Values.appName }}
