@@ -28,6 +28,11 @@ livenessProbe: {}
 
 readinessProbe: {}
 
+
+autoReloadConfig: "false"
+configmapName: ""
+
+
 service:
   create: "false"
   type: NodePort
