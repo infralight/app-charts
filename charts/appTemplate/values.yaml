@@ -29,7 +29,7 @@ livenessProbe: {}
 readinessProbe: {}
 
 
-autoReloadConfig: "false"
+autoReloadConfig: false
 configmapName: ""
 
 
