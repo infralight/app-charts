@@ -1,0 +1,8 @@
+{{- if eq .Values.role.create "true" -}}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ .Values.appName }}
+rules:
+  {{-  toYaml .Values.role.rules | nindent 2}}
+{{- end }}
