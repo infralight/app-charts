@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName }}
+  name: {{ .Values.appName }}
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.appName }}
+  template:
+    metadata:
+      annotations:
+        {{- if .Values.autoReloadConfig }}
+        checksum/configuration: {{ include (print $.Template.BasePath "/" .Values.configmapName ".yaml" ) . | sha256sum }}
+        {{- end }}
+      labels:
+        app.kubernetes.io/instance: {{ .Values.appName }}
+        app.kubernetes.io/name: {{ .Values.appName }}
+    spec:
+    {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+    {{- end }}
+{{- if .Values.nodeSelector }}
+      nodeSelector:
+{{- toYaml .Values.nodeSelector | nindent 10 }}
+{{- end }}
+{{- if .Values.tolerations }}
+      tolerations:
+{{- toYaml .Values.tolerations | nindent 10 }}
+{{- end }}
+      containers:
+      - image: "{{ trimPrefix "_" .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ ne .Values.ecrAppName ""  | ternary .Values.ecrAppName .Values.appName }}:{{ .Values.tag }}"
+        envFrom:
+          - configMapRef:
+              name: {{ .Values.appName }}-config-map
+          - secretRef:
+              name: {{ .Values.appName }}-secrets
+        name: {{ .Values.appName }}-server
+{{- if .Values.readinessProbe }}
+        readinessProbe:
+{{- toYaml .Values.readinessProbe | nindent 10 }}
+{{- end }}
+{{- if .Values.livenessProbe }}
+        livenessProbe:
+{{- toYaml .Values.livenessProbe | nindent 10 }}
+{{- end }}
+        resources:
+{{- toYaml .Values.resources | nindent 10 }}
