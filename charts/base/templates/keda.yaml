@@ -1,0 +1,26 @@
+{{- if eq .Values.keda.enabled "true" -}}
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ .Values.appName }}-sqs-scaledobject
+spec:
+  cooldownPeriod: {{ .Values.keda.config.cooldownPeriod }}
+  fallback:
+    failureThreshold: {{ .Values.keda.config.fallback.failureThreshold }}
+    replicas: {{ .Values.keda.config.fallback.replicas }}
+  idleReplicaCount: {{ .Values.keda.config.idleReplicaCount }}
+  maxReplicaCount: {{ .Values.keda.config.maxReplicaCount }}
+  minReplicaCount: {{ .Values.keda.config.minReplicaCount }}
+  pollingInterval: {{ .Values.keda.config.pollingInterval }}
+  scaleTargetRef:
+    name: {{ .Values.appName }}
+  triggers:
+    - metadata:
+        awsRegion: {{ .Values.region }}
+        identityOwner: operator
+        queueLength: {{ quote .Values.keda.queueLength }}
+        queueURL: "https://sqs.{{ .Values.region }}.amazonaws.com/{{ trimPrefix "_" .Values.account }}/{{ .Values.env }}-{{ .Values.keda.queue }}"
+        scaleOnInFlight: "false"
+      type: aws-sqs-queue
+{{- end -}}
