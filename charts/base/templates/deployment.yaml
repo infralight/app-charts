@@ -30,6 +30,27 @@ spec:
       tolerations:
 {{- toYaml .Values.tolerations | nindent 10 }}
 {{- end }}
+      affinity:
+        podAffinity:
+          {{- if .Values.podAffinity.preferred }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            {{- toYaml .Values.podAffinity.preferred | nindent 8 }}
+          {{- end }}
+          {{- if .Values.podAffinity.required }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            {{- toYaml .Values.podAffinity.required | nindent 8 }}
+          {{- end }}
+        nodeAffinity:
+          {{- if .Values.nodeAffinity.required }}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              {{- toYaml .Values.nodeAffinity.required | nindent 8 }}
+          {{- end }}
+          {{- if .Values.nodeAffinity.preferred }}
+          preferredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              {{- toYaml .Values.nodeAffinity.preferred | nindent 8 }}
+          {{- end }}
       containers:
       - image: "{{ trimPrefix "_" .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ ne .Values.ecrAppName ""  | ternary .Values.ecrAppName .Values.appName }}:{{ .Values.tag }}"
         envFrom:
