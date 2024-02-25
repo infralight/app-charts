@@ -1,0 +1,45 @@
+{{- if (and .Values.autoscaling.enabled (or (eq .Values.deployment "deployment") (eq .Values.deployment "statefulset"))) }}
+{{- if .Capabilities.APIVersions.Has "autoscaling/v2" }}
+apiVersion: autoscaling/v2
+{{- else }}
+apiVersion: autoscaling/v2beta2
+{{- end }}
+kind: HorizontalPodAutoscaler
+metadata:
+  {{- if .Values.config.group }}
+  name: {{ include "logstream-workergroup.fullname" . }}-{{ (kebabcase .Values.config.group) }}
+  {{- else if .Values.config.tag }}
+  name: {{ include "logstream-workergroup.fullname" . }}-{{ (kebabcase .Values.config.tag) }}
+  {{- end }}
+
+  labels:
+    {{- include "logstream-workergroup.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: {{ if (eq .Values.deployment "deployment") }}Deployment{{- else }}StatefulSet{{- end }}
+    name: {{ include "logstream-workergroup.fullname" . }}
+  minReplicas: {{ .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  {{- with .Values.autoscaling.behavior }}
+  behavior:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+  metrics:
+  {{- if .Values.autoscaling.targetCPUUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+  {{- end }}
+  {{- if .Values.autoscaling.targetMemoryUtilizationPercentage }}
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
+  {{- end }}
+{{- end }}
