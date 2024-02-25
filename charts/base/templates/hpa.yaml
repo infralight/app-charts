@@ -6,19 +6,14 @@ apiVersion: autoscaling/v2beta2
 {{- end }}
 kind: HorizontalPodAutoscaler
 metadata:
-  {{- if .Values.config.group }}
-  name: {{ include "logstream-workergroup.fullname" . }}-{{ (kebabcase .Values.config.group) }}
-  {{- else if .Values.config.tag }}
-  name: {{ include "logstream-workergroup.fullname" . }}-{{ (kebabcase .Values.config.tag) }}
-  {{- end }}
-
+  name: {{ .Values.appName }}
   labels:
-    {{- include "logstream-workergroup.labels" . | nindent 4 }}
+    app.kubernetes.io/name: {{ .Values.appName }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: {{ if (eq .Values.deployment "deployment") }}Deployment{{- else }}StatefulSet{{- end }}
-    name: {{ include "logstream-workergroup.fullname" . }}
+    name: {{ .Values.appName }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   {{- with .Values.autoscaling.behavior }}
