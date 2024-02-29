@@ -1,0 +1,98 @@
+replicas: 1
+namespace: default
+bucketPrefix: ""
+
+cidrs: "127.0.0.1/8"
+
+ingress:
+  create: "true"
+  schema: internal
+  successcodes: 200,204
+  healthcheckpath: /
+  timeout: idle_timeout.timeout_seconds=180
+#  cert: arn:aws:acm:us-west-2:000000000000:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+  dns: 'app'
+  waf:
+    create: "false"
+#    arn: 'arn:aws:wafv2:us-west-2:000000000000:regional/webacl/backend-waf/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
+
+serviceAccount:
+  create: "true"
+  role: ""
+  name: "sa-name"
+
+
+nodeSelector: {}
+tolerations: {}
+livenessProbe: {}
+
+readinessProbe: {}
+
+
+autoReloadConfig: false
+configmapName: ""
+
+
+service:
+  create: "false"
+  type: NodePort
+  servicePort: 7500
+  targetPort: 80
+
+clusterRole:
+  create: "false"
+
+role:
+  create: "false"
+  rules: {}
+auth0:
+  fireflyDomain: ""
+  providerDomain: ""
+elastic:
+  url: ""
+vault:
+  url: ""
+resources: {}
+
+env: ""
+account: ""
+domain: "domain"
+tag: latest
+region: us-west-2
+image_override: busybox
+ecr: 000000000000.dkr.ecr
+appName: app-name
+ecrAppName: ""
+
+autoscaling:
+  enabled: false 
+
+keda:
+  enabled: false
+  queue: "queue"
+  queueLength: 5
+  config:
+    minReplicaCount: 1
+    maxReplicaCount: 100
+    pollingInterval: 30
+    cooldownPeriod: 300
+    idleReplicaCount: 0
+    fallback:
+      failureThreshold: 10
+      replicas: 1  
+
+pdb:
+  enabled: false
+  minAvailable: 1
+  maxUnavailable: 0
+
+configMap:
+    AWS_REGION: "us-east-1"
+    TEST: "test"
+
+secrets:
+    - remoteRef:
+        conversionStrategy: Default
+        key: mongodb
+        property: MONGO_URI
+      secretKey: MONGO_URI
