@@ -227,4 +227,14 @@ entries:
     urls:
     - https://github.com/infralight/app-charts/releases/download/appTemplate-0.0.4/appTemplate-0.0.4.tgz
     version: 0.0.4
-generated: "2023-12-18T12:43:25.780623463Z"
+  base:
+  - apiVersion: v2
+    created: "2024-02-29T15:34:13.670816675Z"
+    description: base
+    digest: 0d808100a13428a063d0c4ca63579081a808e36c3c603c05dbfefc3b2bc8c341
+    name: base
+    type: application
+    urls:
+    - https://github.com/infralight/app-charts/releases/download/base-0.0.1/base-0.0.1.tgz
+    version: 0.0.1
+generated: "2024-02-29T15:34:13.670927723Z"
