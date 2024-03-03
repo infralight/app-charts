@@ -18,9 +18,7 @@ ingress:
 
 serviceAccount:
   create: "true"
-  role: ""
   name: "sa-name"
-
 
 nodeSelector: {}
 tolerations: {}
@@ -32,7 +30,8 @@ readinessProbe: {}
 autoReloadConfig: false
 configmapName: ""
 
-
+serviceMonitor:
+  enabled: "false"
 service:
   create: "false"
   type: NodePort
@@ -45,17 +44,23 @@ clusterRole:
 role:
   create: "false"
   rules: {}
-auth0:
-  fireflyDomain: ""
-  providerDomain: ""
-elastic:
-  url: ""
-vault:
-  url: ""
-resources: {}
+#auth0:
+#  fireflyDomain: ""
+#  providerDomain: ""
+#elastic:
+#  url: ""
+#vault:
+#  url: ""
+resources: 
+  requests:
+    memory: "64Mi"
+    cpu: "250m"
+  limits:
+    memory: "128Mi"
+    cpu: "500m"
 
-env: ""
-account: ""
+env: "test"
+account: "1245"
 domain: "domain"
 tag: latest
 region: us-west-2
@@ -68,7 +73,7 @@ autoscaling:
   enabled: false 
 
 keda:
-  enabled: false
+  enabled: "false"
   queue: "queue"
   queueLength: 5
   config:
@@ -80,9 +85,46 @@ keda:
     fallback:
       failureThreshold: 10
       replicas: 1  
+# Pod Affinity Configuration
+affinity:
+  podAffinity:
+    preferred:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - my-app
+          topologyKey: kubernetes.io/hostname
+    required:
+      - podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - my-app
+          topologyKey: kubernetes.io/hostname
+  
+  # Node Affinity Configuration
+  nodeAffinity:
+    required:
+      - matchExpressions:
+          - key: node-role
+            operator: In
+            values:
+              - my-node-role
+    preferred:
+      - matchExpressions:
+          - key: zone
+            operator: In
+            values:
+              - us-west1-a
 
 pdb:
-  enabled: false
+  enabled: "false"
   minAvailable: 1
   maxUnavailable: 0
 
@@ -96,3 +138,4 @@ secrets:
         key: mongodb
         property: MONGO_URI
       secretKey: MONGO_URI
+  

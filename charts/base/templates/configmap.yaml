@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.appName }}
+  name: {{ .Values.appName }}-config-map
 data: 
     {{- if .Values.configMap }}
     {{- include "base.tplvalues.render" ( dict "value" .Values.configMap "context" $ ) | nindent 2 }}
