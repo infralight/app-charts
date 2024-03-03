@@ -1,0 +1,25 @@
+{{- if eq .Values.base.serviceMonitor.enabled "true" -}}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Values.base.appName }}-metrics
+  namespace: {{ .Values.base.namespace }}
+spec:
+  endpoints:
+    - honorLabels: true
+      metricRelabelings:
+        - action: labeldrop
+          regex: {{ .Values.base.serviceMonitor.ignoreLabels }}
+      path: /metrics
+      port: http
+      relabelings:
+        - action: labeldrop
+          regex: {{ .Values.base.serviceMonitor.ignoreLabels }}
+
+  namespaceSelector:
+    matchNames:
+      - {{ .Values.base.namespace }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Values.base.appName }}
+{{- end }}
