@@ -15,7 +15,6 @@ spec:
       relabelings:
         - action: labeldrop
           regex: {{ .Values.serviceMonitor.ignoreLabels }}
-
   namespaceSelector:
     matchNames:
       - {{ .Values.namespace }}
