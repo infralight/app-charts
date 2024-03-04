@@ -2,7 +2,7 @@
 kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: {{ .Values.appName }}
+  name: {{ .Values.appName }}-role
 rules:
   {{-  toYaml .Values.role.rules | nindent 2}}
 {{- end }}
