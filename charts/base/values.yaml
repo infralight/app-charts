@@ -5,7 +5,7 @@ bucketPrefix: ""
 cidrs: "127.0.0.1/8"
 
 ingress:
-  create: "true"
+  create: true
   schema: internal
   successcodes: 200,204
   healthcheckpath: /
@@ -13,11 +13,11 @@ ingress:
 #  cert: arn:aws:acm:us-west-2:000000000000:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
   dns: 'app'
   waf:
-    create: "false"
+    create: false
 #    arn: 'arn:aws:wafv2:us-west-2:000000000000:regional/webacl/backend-waf/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
 
 serviceAccount:
-  create: "true"
+  create: true
   name: "sa-name"
 
 nodeSelector: {}
@@ -31,18 +31,18 @@ autoReloadConfig: false
 configmapName: ""
 
 serviceMonitor:
-  enabled: "false"
+  enabled: false
 service:
-  create: "false"
+  create: false
   type: NodePort
   servicePort: 7500
   targetPort: 80
 
 clusterRole:
-  create: "false"
+  create: false
 
 role:
-  create: "false"
+  create: false
   rules: {}
 #auth0:
 #  fireflyDomain: ""
@@ -73,7 +73,7 @@ autoscaling:
   enabled: false 
 
 keda:
-  enabled: "false"
+  enabled: false
   queue: "queue"
   queueLength: 5
   config:
@@ -86,45 +86,44 @@ keda:
       failureThreshold: 10
       replicas: 1  
 # Pod Affinity Configuration
-affinity:
-  podAffinity:
-    preferred:
-      - weight: 100
-        podAffinityTerm:
-          labelSelector:
-            matchExpressions:
-              - key: app
-                operator: In
-                values:
-                  - my-app
-          topologyKey: kubernetes.io/hostname
-    required:
-      - podAffinityTerm:
-          labelSelector:
-            matchExpressions:
-              - key: app
-                operator: In
-                values:
-                  - my-app
-          topologyKey: kubernetes.io/hostname
-  
-  # Node Affinity Configuration
-  nodeAffinity:
-    required:
-      - matchExpressions:
-          - key: node-role
-            operator: In
-            values:
-              - my-node-role
-    preferred:
-      - matchExpressions:
-          - key: zone
-            operator: In
-            values:
-              - us-west1-a
+podAffinity:
+  preferred:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - my-app
+        topologyKey: kubernetes.io/hostname
+  required:
+    - podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+            - key: app
+              operator: In
+              values:
+                - my-app
+        topologyKey: kubernetes.io/hostname
+
+# Node Affinity Configuration
+nodeAffinity:
+  required:
+    - matchExpressions:
+        - key: node-role
+          operator: In
+          values:
+            - my-node-role
+  preferred:
+    - matchExpressions:
+        - key: zone
+          operator: In
+          values:
+            - us-west1-a
 
 pdb:
-  enabled: "false"
+  enabled: false
   minAvailable: 1
   maxUnavailable: 0
 
