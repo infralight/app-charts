@@ -134,7 +134,7 @@ configMap:
 secrets:
     - remoteRef:
         conversionStrategy: Default
-        key: mongodb
-        property: MONGO_URI
-      secretKey: MONGO_URI
+        key: test
+        property: TEST_URI
+      secretKey: TEST_URI
   
