@@ -1,0 +1,5 @@
+{{- if .Values.useStatefulSet }}
+{{- include "base.statefulset" . | nindent 0 }}
+{{- else }}
+{{- include "base.deployment" . | nindent 0 }}
+{{- end }}
