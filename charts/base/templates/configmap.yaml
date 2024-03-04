@@ -1,3 +1,4 @@
+{{- if eq .Values.configMap -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -6,3 +7,4 @@ data:
     {{- if .Values.configMap }}
     {{- include "base.tplvalues.render" ( dict "value" .Values.configMap "context" $ ) | nindent 2 }}
     {{- end }}
+{{- end }}
