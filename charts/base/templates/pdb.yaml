@@ -9,7 +9,7 @@ kind: PodDisruptionBudget
 metadata:
   labels:
     app.kubernetes.io/name: {{ .Values.appName }}
-  name: {{ .Values.appName }}-pdb
+  name: {{ .Values.appName }}
 spec:
   {{- if .Values.pdb.minAvailable }}
   minAvailable: {{ .Values.pdb.minAvailable }}

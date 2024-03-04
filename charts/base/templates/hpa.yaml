@@ -6,7 +6,7 @@ apiVersion: autoscaling/v2beta2
 {{- end }}
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ .Values.appName }}-hpa
+  name: {{ .Values.appName }}
   labels:
     app.kubernetes.io/name: {{ .Values.appName }}
 spec:
