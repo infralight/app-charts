@@ -30,7 +30,10 @@ spec:
 {{- if .Values.tolerations }}
       tolerations:
 {{- range .Values.tolerations }}
-{{- toYaml . | indent 4 | trim | replace "'" "" }}
+        - effect: "{{ .effect }}"
+          key: "{{ .key }}"
+          operator: "{{ .operator }}"
+          value: "{{ .value }}"
 {{- end }}
 {{- end }}
 {{- if .Values.affinity }}
@@ -54,7 +57,5 @@ spec:
 {{- toYaml .Values.livenessProbe | nindent 10 }}
 {{- end }}
         resources:
-{{- range .Values.resources }}
-{{- toYaml . | indent 4 | trim | replace "'" "" }}
-{{- end }}
+{{- toYaml .Values.resources | nindent 10 }}
 {{- end }}

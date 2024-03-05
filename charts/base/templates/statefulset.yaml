@@ -31,7 +31,13 @@ spec:
 {{- if .Values.tolerations }}
       tolerations:
 {{- range .Values.tolerations }}
-{{- toYaml . | indent 4 | trim | replace "'" "" }}
+{{- $toleration := . }}
+{{- range $index, $effect := .effect }}
+  - effect: "{{ index $toleration.effect $index }}"
+    key: "{{ $toleration.key }}"
+    operator: "{{ $toleration.operator }}"
+    value: "{{ $toleration.value }}"
+{{- end }}
 {{- end }}
 {{- end }}
       {{- if .Values.affinity }}
