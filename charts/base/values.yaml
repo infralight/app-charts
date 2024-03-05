@@ -22,7 +22,11 @@ serviceAccount:
   name: "sa-name"
 
 nodeSelector: {}
-tolerations: {}
+tolerations:
+  - effect: NoSchedule
+    key: test
+    operator: Equal
+    value: "true"
 livenessProbe: {}
 
 readinessProbe: {}
@@ -58,7 +62,7 @@ resources:
     cpu: "250m"
   limits:
     memory: "128Mi"
-    cpu: "500m"
+    cpu: 500m
 
 env: "test"
 account: "1245"
