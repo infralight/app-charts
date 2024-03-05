@@ -54,5 +54,7 @@ spec:
 {{- toYaml .Values.livenessProbe | nindent 10 }}
 {{- end }}
         resources:
-{{- toYaml .Values.resources | nindent 10 }}
+{{- range .Values.resources }}
+{{- toYaml . | indent 4 | trim | replace "'" "" }}
+{{- end }}
 {{- end }}
