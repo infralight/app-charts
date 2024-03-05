@@ -55,10 +55,10 @@ spec:
 {{- toYaml .Values.resources | nindent 10 }}
   volumeClaimTemplates:
   - metadata:
-      name: {{ .Values.volumeClaimTemplate.name }}
+      name: {{ .Values.statefulset.volumeClaimTemplate.name }}
     spec:
       accessModes: ["ReadWriteOnce"]
       resources:
         requests:
-          storage: {{ .Values.volumeClaimTemplate.size }}
-      storageClassName: {{ .Values.volumeClaimTemplate.storageClassName }}
+          storage: {{ .Values.statefulset.volumeClaimTemplate.size }}
+      storageClassName: {{ .Values.statefulset.volumeClaimTemplate.storageClassName }}
