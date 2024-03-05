@@ -28,10 +28,12 @@ spec:
       nodeSelector:
 {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
-      {{- if .Values.tolerations }}
+{{- if .Values.tolerations }}
       tolerations:
-{{- toYaml .Values.tolerations | nindent 8 }}
-      {{- end }}
+{{- range .Values.tolerations }}
+{{- toYaml . | indent 4 | trim | replace "'" "" }}
+{{- end }}
+{{- end }}
       {{- if .Values.affinity }}
       affinity:
 {{- toYaml .Values.affinity | nindent 6 }}
