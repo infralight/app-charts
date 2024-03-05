@@ -125,15 +125,3 @@ pdb:
   enabled: false
   minAvailable: 1
   maxUnavailable: 0
-
-configMap:
-    AWS_REGION: "us-east-1"
-    TEST: "test"
-
-secrets:
-    - remoteRef:
-        conversionStrategy: Default
-        key: test
-        property: TEST_URI
-      secretKey: TEST_URI
-  
