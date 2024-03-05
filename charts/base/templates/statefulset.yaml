@@ -1,3 +1,4 @@
+{{- if .Values.useStatefulSet }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -55,10 +56,11 @@ spec:
 {{- toYaml .Values.resources | nindent 10 }}
   volumeClaimTemplates:
   - metadata:
-      name: {{ .Values.statefulset.volumeClaimTemplate.name }}
+      name: {{ .Values.volumeClaimTemplate.name }}
     spec:
       accessModes: ["ReadWriteOnce"]
       resources:
         requests:
-          storage: {{ .Values.statefulset.volumeClaimTemplate.size }}
-      storageClassName: {{ .Values.statefulset.volumeClaimTemplate.storageClassName }}
+          storage: {{ .Values.volumeClaimTemplate.size }}
+      storageClassName: {{ .Values.volumeClaimTemplate.storageClassName }}
+{{- end }}
