@@ -6,7 +6,7 @@ bucketPrefix: ""
 cidrs: "127.0.0.1/8"
 
 ingress:
-  create: true
+  create: false
   schema: internal
   successcodes: 200,204
   healthcheckpath: /
@@ -18,15 +18,11 @@ ingress:
 #    arn: 'arn:aws:wafv2:us-west-2:000000000000:regional/webacl/backend-waf/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
 
 serviceAccount:
-  create: true
+  create: false
   name: "sa-name"
 
 nodeSelector: {}
-tolerations:
-  - effect: NoSchedule
-    key: test
-    operator: Equal
-    value: "true"
+tolerations: {}
 livenessProbe: {}
 
 readinessProbe: {}
