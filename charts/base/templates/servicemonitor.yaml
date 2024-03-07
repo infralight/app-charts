@@ -6,15 +6,7 @@ metadata:
   namespace: {{ .Values.namespace }}
 spec:
   endpoints:
-    - honorLabels: true
-      metricRelabelings:
-        - action: labeldrop
-          regex: {{ .Values.serviceMonitor.ignoreLabels }}
-      path: /metrics
-      port: http
-      relabelings:
-        - action: labeldrop
-          regex: {{ .Values.serviceMonitor.ignoreLabels }}
+{{- toYaml .Values.serviceMonitor.data | nindent 4 }}
   namespaceSelector:
     matchNames:
       - {{ .Values.namespace }}
