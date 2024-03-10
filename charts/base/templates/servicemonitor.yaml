@@ -14,3 +14,19 @@ spec:
     matchLabels:
       app.kubernetes.io/name: {{ .Values.appName }}
 {{- end }}
+---
+{{- if eq .Values.metricsService.enabled true -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.appName }}-metrics
+  namespace: {{ .Values.namespace }}
+spec:
+  ports:
+    - port: {{ .Values.metricsService.servicePort }}
+      targetPort: {{ .Values.metricsService.targetPort }}
+      protocol: TCP
+      name: {{ .Values.appName }}-metrics
+  selector:
+    app.kubernetes.io/name: {{ .Values.appName }}
+{{- end }}
