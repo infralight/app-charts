@@ -14,7 +14,7 @@ spec:
     metadata:
       annotations:
         {{- if .Values.autoReloadConfig }}
-        checksum/configuration: {{ include (print $.Template.BasePath "/" .Values.appName "-config-map.yaml" ) . | sha256sum }}
+        checksum/configuration: {{ include (print $.Template.BasePath "/" "configmap.yaml" ) . | sha256sum }}
         {{- end }}
       labels:
         app.kubernetes.io/instance: {{ .Values.appName }}
