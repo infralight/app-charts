@@ -229,6 +229,15 @@ entries:
     version: 0.0.4
   base:
   - apiVersion: v2
+    created: "2024-03-12T12:40:29.387183935Z"
+    description: base
+    digest: 1887ae873cd80fe4257045a965da950199c6e2c0d65e3f3734496b40e385f657
+    name: base
+    type: application
+    urls:
+    - https://github.com/infralight/app-charts/releases/download/base-0.0.30/base-0.0.30.tgz
+    version: 0.0.30
+  - apiVersion: v2
     created: "2024-03-12T10:04:53.277344399Z"
     description: base
     digest: b8f466ba0c16da3dad764792aad3053e939a08f8d0f02d2081fbc5b67b8eb4f7
@@ -489,4 +498,4 @@ entries:
     urls:
     - https://github.com/infralight/app-charts/releases/download/base-0.0.1/base-0.0.1.tgz
     version: 0.0.1
-generated: "2024-03-12T10:04:53.277620875Z"
+generated: "2024-03-12T12:40:29.387590988Z"
