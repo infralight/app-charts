@@ -30,7 +30,17 @@ readinessProbe: {}
 
 autoReloadConfig: false
 configmapName: ""
-
+containers:
+  securityContext:
+    allowPrivilegeEscalation: false
+securityContext:
+  runAsNonRoot: true
+terminationGracePeriodSeconds:
+  seconds: 10
+secret:
+  enabled: false
+metricsService:
+  enabled: false
 serviceMonitor:
   enabled: false
   data:
