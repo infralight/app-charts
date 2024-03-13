@@ -27,7 +27,7 @@ spec:
       securityContext:	
 {{- toYaml .Values.securityContext | nindent 10 }}
     {{- end }}
-    {{- if .Values.terminationGracePeriodSeconds -}}
+    {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds.seconds }}
     {{- end }}
 {{- if .Values.nodeSelector }}
