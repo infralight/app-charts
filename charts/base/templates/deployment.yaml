@@ -58,12 +58,12 @@ spec:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.env "context" $ ) | nindent 8 }}
 {{- end }}
 {{- if .Values.configMap }}
-        envFrom:
+      - envFrom:
           - configMapRef:
               name: {{ .Values.appName }}-config-map
 {{- end }}
 {{- if .Values.externalsecret }}
-        envFrom:
+      - envFrom:
           - secretRef:
               name: {{ .Values.appName }}-secrets
 {{- end }}
