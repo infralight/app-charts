@@ -46,12 +46,43 @@ spec:
       {{- end }} 
       containers:
       - image: "{{ trimPrefix "_" .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ ne .Values.ecrAppName ""  | ternary .Values.ecrAppName .Values.appName }}:{{ .Values.tag }}"
+{{- if .Values.containers.volumeMounts }}
+        volumeMounts:
+{{- range .Values.containers.volumeMounts }}
+          - mountPath: {{ .mountPath }}
+            name: {{ .name }}
+{{- end }}
+{{- end }}
+{{- if .Values.containers.ports }}
+        ports:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.ports "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.containers.env }}
+        env:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.env "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.configMap }}
+{{- if .Values.externalsecret }}
         envFrom:
           - configMapRef:
               name: {{ .Values.appName }}-config-map
           - secretRef:
               name: {{ .Values.appName }}-secrets
-        name: {{ .Values.appName }}-server
+{{- else }}
+        envFrom:
+          - configMapRef:
+              name: {{ .Values.appName }}-config-map
+{{- end }}
+{{- else if .Values.externalsecret }}
+        envFrom:
+          - secretRef:
+              name: {{ .Values.appName }}-secrets
+{{- end }}
+      {{- if .Values.containers.securityContext }}
+        securityContext:	
+{{- toYaml .Values.containers.securityContext | nindent 10 }}
+      {{- end }}
+        name: {{ .Values.appName }}
         {{- if .Values.readinessProbe }}
         readinessProbe:
 {{- toYaml .Values.readinessProbe | nindent 10 }}
@@ -62,13 +93,18 @@ spec:
         {{- end }}
         resources:
 {{- toYaml .Values.resources | nindent 10 }}
+{{- if .Values.volumeClaimTemplates }}
   volumeClaimTemplates:
+{{- range .Values.volumeClaimTemplates }}
   - metadata:
-      name: {{ .Values.volumeClaimTemplate.name }}
+      name: {{ .metadata.name }}
     spec:
-      accessModes: ["ReadWriteOnce"]
+      accessModes:
+        - {{ .spec.accessModes | quote }}
+      storageClassName: {{ .spec.storageClassName | quote }}
       resources:
         requests:
-          storage: {{ .Values.volumeClaimTemplate.size }}
-      storageClassName: {{ .Values.volumeClaimTemplate.storageClassName }}
+          storage: {{ .spec.resources.requests.storage }}
+{{- end }}
+{{- end }}
 {{- end }}
