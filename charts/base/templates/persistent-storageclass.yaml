@@ -2,8 +2,8 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: persistent-ebs-sc
-provisioner: ebs.csi.aws.com
+  name: {{ .Values.StorageClass.name }}
+provisioner: {{ .Values.StorageClass.provisioner }}
 volumeBindingMode: WaitForFirstConsumer
 parameters:
   type: {{ .Values.StorageClass.type }}
