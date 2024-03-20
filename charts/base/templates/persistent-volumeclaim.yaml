@@ -6,7 +6,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: persistent-ebs-sc
+  storageClassName: {{ .Values.PersistentVolumeClaim.storageClassName }}
   resources:
     requests:
       storage: {{ .Values.PersistentVolumeClaim.capacity }}
