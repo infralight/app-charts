@@ -1,0 +1,14 @@
+{{- if eq .Values.StorageClass.create true -}}
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: persistent-ebs-sc
+provisioner: ebs.csi.aws.com
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  type: {{ .Values.StorageClass.type }}
+  iops: {{ .Values.StorageClass.iops }}
+  throughput: {{ .Values.StorageClass.throughput }}
+reclaimPolicy: {{ .Values.StorageClass.reclaimPolicy }}
+allowVolumeExpansion: true
+{{- end -}}

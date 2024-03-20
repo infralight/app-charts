@@ -1,0 +1,13 @@
+{{- if eq .Values.PersistentVolumeClaim.create true -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.PersistentVolumeClaim.name }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: persistent-ebs-sc
+  resources:
+    requests:
+      storage: {{ .Values.PersistentVolumeClaim.capacity }}
+{{- end -}}
