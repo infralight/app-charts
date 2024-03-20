@@ -30,7 +30,8 @@ readinessProbe: {}
 
 autoReloadConfig: false
 configmapName: ""
-containers: {}
+PersistentVolumeClaim: {}
+StorageClass: {}
 securityContext: {} 
 terminationGracePeriodSeconds: {}
 secret:
