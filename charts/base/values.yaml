@@ -40,16 +40,6 @@ metricsService:
   enabled: false
 serviceMonitor:
   enabled: false
-  data:
-    - honorLabels: true
-      metricRelabelings:
-        - action: labeldrop
-          regex: false
-      path: /metrics
-      port: http
-      relabelings:
-        - action: labeldrop
-          regex: false
 service:
   create: false
   type: NodePort
