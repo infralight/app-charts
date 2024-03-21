@@ -25,6 +25,10 @@ livenessProbe: {}
 readinessProbe: {}
 
 firefly:
+  clusterRole:
+    create: false
+  role:
+    create: false
   crd:
     crawlers:
       create: false
