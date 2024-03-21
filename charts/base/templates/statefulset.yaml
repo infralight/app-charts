@@ -64,7 +64,7 @@ spec:
           - configMapRef:
               name: {{ .Values.appName }}-config-map
           - secretRef:
-              name: {{ .Values.appName }}-secrets
+              name:  {{ .Values.externalsecret.targetname }}
 {{- else }}
         envFrom:
           - configMapRef:
@@ -73,7 +73,7 @@ spec:
 {{- else if .Values.externalsecret }}
         envFrom:
           - secretRef:
-              name: {{ .Values.appName }}-secrets
+              name:  {{ .Values.externalsecret.targetname }}
 {{- end }}
       {{- if .Values.containers.securityContext }}
         securityContext:	
@@ -97,7 +97,7 @@ spec:
       name: {{ .metadata.name }}
     spec:
       accessModes:
-        - {{ .spec.accessModes | quote }}
+        - {{ index .spec.accessModes 0 | quote }}
       storageClassName: {{ .spec.storageClassName | quote }}
       resources:
         requests:
