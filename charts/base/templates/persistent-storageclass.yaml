@@ -1,14 +1,17 @@
-{{- if eq .Values.StorageClass.create true -}}
+{{- range .Values.StorageClasses }}
+{{- if .create }}
+---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: {{ .Values.StorageClass.name }}
-provisioner: {{ .Values.StorageClass.provisioner }}
+  name: {{ .name }}
+provisioner: {{ .provisioner }}
 volumeBindingMode: WaitForFirstConsumer
 parameters:
-  type: {{ .Values.StorageClass.type }}
-  iops: {{ .Values.StorageClass.iops }}
-  throughput: {{ .Values.StorageClass.throughput }}
-reclaimPolicy: {{ .Values.StorageClass.reclaimPolicy }}
+  type: {{ .type }}
+  iops: {{ .iops }}
+  throughput: {{ .throughput }}
+reclaimPolicy: {{ .reclaimPolicy }}
 allowVolumeExpansion: true
-{{- end -}}
+{{- end }}
+{{- end }}
