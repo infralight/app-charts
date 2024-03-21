@@ -54,6 +54,12 @@ spec:
         ports:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.ports "context" $ ) | nindent 10 }}
 {{- end }}
+{{- if .Values.containers.volumes }}
+        volumes:	
+          - name: {{ .Values.containers.volumes.name }}
+            persistentVolumeClaim:	
+              claimName: {{ .Values.containers.volumes.persistentVolumeClaim.name }}
+{{- end }}
 {{- if .Values.containers.env }}
         env:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.env "context" $ ) | nindent 10 }}
@@ -90,12 +96,6 @@ spec:
         {{- end }}
         resources:
 {{- toYaml .Values.resources | nindent 10 }}
-{{- if .Values.volumes }}
-  volumes:	
-    - name: {{ .Values.volumes.name }}
-      persistentVolumeClaim:	
-        claimName: {{ .Values.volumes.persistentVolumeClaim.name }}
-{{- end }}
 {{- if .Values.volumeClaimTemplates }}
   volumeClaimTemplates:
 {{- range .Values.volumeClaimTemplates }}
