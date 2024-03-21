@@ -24,6 +24,12 @@ spec:
       {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
       {{- end }}
+      {{- if .Values.volumes }}
+      volumes:	
+        - name: {{ .Values.volumes.name }}
+          persistentVolumeClaim:	
+            claimName: {{ .Values.volumes.persistentVolumeClaim.name }}
+      {{- end }}
       {{- if .Values.nodeSelector }}
       nodeSelector:
 {{- toYaml .Values.nodeSelector | nindent 8 }}
@@ -53,12 +59,6 @@ spec:
 {{- if .Values.containers.ports }}
         ports:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.ports "context" $ ) | nindent 10 }}
-{{- end }}
-{{- if .Values.containers.volumes }}
-        volumes:	
-          - name: {{ .Values.containers.volumes.name }}
-            persistentVolumeClaim:	
-              claimName: {{ .Values.containers.volumes.persistentVolumeClaim.name }}
 {{- end }}
 {{- if .Values.containers.env }}
         env:
