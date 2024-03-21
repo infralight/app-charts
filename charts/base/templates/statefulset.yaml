@@ -90,6 +90,12 @@ spec:
         {{- end }}
         resources:
 {{- toYaml .Values.resources | nindent 10 }}
+{{- if .Values.volumes }}
+  volumes:	
+    - name: {{ .Values.volumes.name }}
+      persistentVolumeClaim:	
+        claimName: {{ .Values.volumes.persistentVolumeClaim.name }}
+{{- end }}
 {{- if .Values.volumeClaimTemplates }}
   volumeClaimTemplates:
 {{- range .Values.volumeClaimTemplates }}
