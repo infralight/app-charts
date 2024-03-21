@@ -28,6 +28,7 @@ readinessProbe: {}
 autoReloadConfig: false
 configmapName: ""
 containers: {}
+volumes: {}
 PersistentVolumeClaim: {}
 StorageClass: {}
 volumeClaimTemplates: {}
