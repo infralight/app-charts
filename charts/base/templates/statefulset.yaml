@@ -31,13 +31,10 @@ spec:
 {{- if .Values.tolerations }}
       tolerations:
 {{- range .Values.tolerations }}
-{{- $toleration := . }}
-{{- range $index, $effect := .effect }}
-  - effect: "{{ index $toleration.effect $index }}"
-    key: "{{ $toleration.key }}"
-    operator: "{{ $toleration.operator }}"
-    value: "{{ $toleration.value }}"
-{{- end }}
+        - effect: "{{ .effect }}"
+          key: "{{ .key }}"
+          operator: "{{ .operator }}"
+          value: "{{ .value }}"
 {{- end }}
 {{- end }}
       {{- if .Values.affinity }}
