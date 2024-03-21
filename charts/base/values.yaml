@@ -24,7 +24,14 @@ livenessProbe: {}
 
 readinessProbe: {}
 
-firefly: {}
+firefly:
+  crd:
+    crawlers:
+      create: false
+    DeleteIntegration:
+      create: false
+    Crawler:
+      create: false
 
 autoReloadConfig: false
 configmapName: ""
