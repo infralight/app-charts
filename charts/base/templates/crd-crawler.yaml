@@ -1,0 +1,14 @@
+{{- if .Values.firefly.crd.Crawler.create }}
+apiVersion: states.gofirefly.io/v1beta1
+kind: Crawler
+metadata:
+  name: {{ .Values.appName }}-crawler-prod-v1beta1
+  namespace: {{ .Values.namespace }}
+spec:
+  maxReplicas: {{ .Values.firefly.crd.maxReplicas }}
+  noLimit: {{ .Values.firefly.crd.profilesExcludeLimits }}
+  queue:
+    url: "https://sqs.{{ .Values.region }}.amazonaws.com/{{ trimPrefix "_" .Values.account }}/{{ .Values.env }}-iacathon-crawler-sqs"
+  resourceProfile: {{ .Values.firefly.crd.resourceProfile}}
+  roleARN: arn:aws:iam::{{ trimPrefix "_" .Values.account }}:role/{{ .Values.env }}-iacathon-operator-oidc
+{{- end }}

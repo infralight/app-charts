@@ -24,6 +24,7 @@ livenessProbe: {}
 
 readinessProbe: {}
 
+firefly: {}
 
 autoReloadConfig: false
 configmapName: ""
