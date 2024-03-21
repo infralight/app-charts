@@ -1,0 +1,10 @@
+{{- if .Values.firefly.crd.DeleteIntegration.create }}
+---
+apiVersion: states.gofirefly.io/v1beta1
+kind: DeleteIntegration
+metadata:
+  name: {{ .Values.appName }}-delete-integration-prod-v1beta1
+  namespace: {{ .Values.namespace }}
+spec:
+  deleteIntegrationSqsUrl: https://sqs.{{ .Values.region }}.amazonaws.com/{{ trimPrefix "_" .Values.account }}/{{ .Values.env }}-iacathon-integration-deleter-sqs
+{{- end }}
