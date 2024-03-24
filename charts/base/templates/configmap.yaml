@@ -1,10 +1,10 @@
-{{- if .Values.configMap -}}
+{{- if .Values.configMaps }}
+{{- range $index, $configMap := .Values.configMaps }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.appName }}-config-map
+  name: {{ $configMap.name }}
 data: 
-    {{- if .Values.configMap }}
-    {{- include "base.tplvalues.render" ( dict "value" .Values.configMap "context" $ ) | nindent 2 }}
-    {{- end }}
+{{- include "base.tplvalues.render" ( dict "value" $configMap "context" $ ) | nindent 2 }}
+{{- end }}
 {{- end }}
