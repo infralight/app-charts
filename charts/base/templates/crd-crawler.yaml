@@ -5,10 +5,10 @@ metadata:
   name: {{ .Values.appName }}-crawler-prod-v1beta1
   namespace: {{ .Values.namespace }}
 spec:
-  maxReplicas: {{ .Values.firefly.crd.maxReplicas }}
-  noLimit: {{ .Values.firefly.crd.profilesExcludeLimits }}
+  maxReplicas: {{ .Values.firefly.crd.Crawler.maxReplicas }}
+  noLimit: {{ .Values.firefly.crd.Crawler.profilesExcludeLimits }}
   queue:
     url: "https://sqs.{{ .Values.region }}.amazonaws.com/{{ trimPrefix "_" .Values.account }}/{{ .Values.env }}-iacathon-crawler-sqs"
-  resourceProfile: {{ .Values.firefly.crd.resourceProfile}}
+  resourceProfile: {{ .Values.firefly.crd.Crawler.resourceProfile}}
   roleARN: arn:aws:iam::{{ trimPrefix "_" .Values.account }}:role/{{ .Values.env }}-iacathon-operator-oidc
 {{- end }}
