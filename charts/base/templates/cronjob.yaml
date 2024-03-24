@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: {{ .Values.appName }}
   name: {{ .Values.appName }}
 spec:
-  schedule: "*/5 * * * *"  # Define your desired schedule here (e.g., run every 5 minutes)
+  schedule: "{{ .Values.CronJob.schedule }}"
   jobTemplate:
     spec:
       template:
