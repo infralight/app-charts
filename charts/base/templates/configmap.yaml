@@ -1,5 +1,6 @@
 {{- if .Values.configMaps }}
 {{- range $index, $configMap := .Values.configMaps }}
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
