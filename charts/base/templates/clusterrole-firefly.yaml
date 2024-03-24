@@ -31,7 +31,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   creationTimestamp: null
-  name: {{ .Values.appTemplate.appName }}-manager-role
+  name: {{ .Values.appName }}-manager-role
 rules:
   - apiGroups:
       - batch
