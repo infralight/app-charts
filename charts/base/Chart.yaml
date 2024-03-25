@@ -2,4 +2,4 @@ apiVersion: v2
 name: base
 description: 'base'
 type: application
-version: 0.0.69
+version: 0.0.70
