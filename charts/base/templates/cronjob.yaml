@@ -32,6 +32,7 @@ spec:
       nodeSelector:
 {{- toYaml .Values.nodeSelector | nindent 10 }}
 {{- end }}
+      restartPolicy: {{ .Values.restartPolicy }}
 {{- if .Values.tolerations }}
       tolerations:
 {{- range .Values.tolerations }}
@@ -45,7 +46,6 @@ spec:
       affinity:
 {{- toYaml .Values.affinity | nindent 8 }}
 {{- end }} 
-      restartPolicy: {{ .Values.restartPolicy }}
       containers:
       - image: "{{ trimPrefix "_" .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ ne .Values.ecrAppName ""  | ternary .Values.ecrAppName .Values.appName }}:{{ .Values.tag }}"
 {{- if .Values.containers.ports }}
