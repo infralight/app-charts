@@ -86,6 +86,6 @@ spec:
             livenessProbe:
 {{- toYaml .Values.livenessProbe | nindent 12 }}
             {{- end }}
-            resources:
-{{- toYaml .Values.resources | nindent 12 }}
+            requests:
+{{- toYaml .Values.requests | nindent 12 }}
 {{- end }}
