@@ -1,5 +1,5 @@
 useStatefulSet: false
-useCronJob: false
+useCronJob: true
 replicas: 1
 namespace: default
 CronJob:
@@ -75,7 +75,10 @@ role:
 #  url: ""
 #vault:
 #  url: ""
-resources: {}
+resources:
+  requests:
+    cpu: "100m"
+    memory: "400Mi"
 
 env: "test"
 account: "1245"

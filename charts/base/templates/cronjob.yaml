@@ -74,18 +74,6 @@ spec:
                   name: {{ .Values.appName }}-secrets
             {{- end }}
             name: {{ .Values.appName }}
-            {{- if .Values.containers.securityContext }}
-            securityContext:
-{{- toYaml .Values.containers.securityContext | nindent 12 }}
-            {{- end }}
-            {{- if .Values.readinessProbe }}
-            readinessProbe:
-{{- toYaml .Values.readinessProbe | nindent 12 }}
-            {{- end }}
-            {{- if .Values.livenessProbe }}
-            livenessProbe:
-{{- toYaml .Values.livenessProbe | nindent 12 }}
-            {{- end }}
-            requests:
-{{- toYaml .Values.requests | nindent 12 }}
+            resources:
+{{- toYaml .Values.resources | nindent 14 }}
 {{- end }}
