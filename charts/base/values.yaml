@@ -2,7 +2,8 @@ useStatefulSet: false
 useCronJob: false
 replicas: 1
 namespace: default
-
+CronJob:
+  schedule: "0 * * * *"
 ingress:
   create: false
   schema: internal
