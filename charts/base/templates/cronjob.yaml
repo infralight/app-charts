@@ -59,19 +59,19 @@ spec:
             {{- if .Values.configMap }}
             {{- if .Values.externalsecret }}
             envFrom:
-            - configMapRef:
-                name: {{ .Values.appName }}-config-map
-            - secretRef:
-                name: {{ .Values.appName }}-secrets
+              - configMapRef:
+                  name: {{ .Values.appName }}-config-map
+              - secretRef:
+                  name: {{ .Values.appName }}-secrets
             {{- else }}
             envFrom:
-            - configMapRef:
-                name: {{ .Values.appName }}-config-map
+              - configMapRef:
+                  name: {{ .Values.appName }}-config-map
             {{- end }}
             {{- else if .Values.externalsecret }}
             envFrom:
-            - secretRef:
-                name: {{ .Values.appName }}-secrets
+              - secretRef:
+                  name: {{ .Values.appName }}-secrets
             {{- end }}
             name: {{ .Values.appName }}
             {{- if .Values.containers.securityContext }}
