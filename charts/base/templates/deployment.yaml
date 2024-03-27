@@ -53,6 +53,10 @@ spec:
         ports:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.ports "context" $ ) | nindent 10 }}
 {{- end }}
+{{- if .Values.containers.command }}
+        env:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.command "context" $ ) | nindent 10 }}
+{{- end }}
 {{- if .Values.containers.env }}
         env:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.env "context" $ ) | nindent 10 }}
@@ -63,7 +67,7 @@ spec:
           - configMapRef:
               name: {{ .Values.appName }}-config-map
           - secretRef:
-              name: {{ .Values.appName }}-secrets
+              name: {{ .Values.externalsecret.targetname }}
 {{- else }}
         envFrom:
           - configMapRef:
@@ -72,7 +76,7 @@ spec:
 {{- else if .Values.externalsecret }}
         envFrom:
           - secretRef:
-              name: {{ .Values.appName }}-secrets
+              name: {{ .Values.externalsecret.targetname }}
 {{- end }}
         name: {{ .Values.appName }}
       {{- if .Values.containers.securityContext }}
