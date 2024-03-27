@@ -64,14 +64,18 @@ spec:
 {{- if .Values.configMaps }}
 {{- if .Values.externalsecret }}
         envFrom:
+{{- range .Values.configMaps }}
           - configMapRef:
-              name: {{ .Values.appName }}-config-map
+              name: {{ .name }}
+{{- end }}
           - secretRef:
               name: {{ .Values.externalsecret.targetname }}
 {{- else }}
         envFrom:
+{{- range .Values.configMaps }}
           - configMapRef:
-              name: {{ .Values.appName }}-config-map
+              name: {{ .name }}
+{{- end }}
 {{- end }}
 {{- else if .Values.externalsecret }}
         envFrom:
