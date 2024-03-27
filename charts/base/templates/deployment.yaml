@@ -54,7 +54,7 @@ spec:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.ports "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.containers.command }}
-        env:
+        command:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.command "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.containers.env }}
