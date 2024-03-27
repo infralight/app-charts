@@ -1,5 +1,5 @@
 useStatefulSet: false
-useCronJob: true
+useCronJob: false
 replicas: 1
 namespace: default
 CronJob:
