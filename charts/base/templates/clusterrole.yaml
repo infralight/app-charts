@@ -16,4 +16,5 @@ rules:
       - create
       - patch
       - update
+      - delete
 {{- end }}
