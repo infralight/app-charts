@@ -122,7 +122,7 @@ spec:
 {{- toYaml .Values.resources | nindent 10 }}
 {{- end }}
 {{- if .Values.customImage }}
-      - image: "{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
+        image: "{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
         name: {{ .Values.customImage.name }}
 {{- if .Values.customImage.ports }}
         ports:
