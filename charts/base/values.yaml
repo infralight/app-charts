@@ -58,7 +58,7 @@ serviceMonitor:
   enabled: false
 service:
   customName: ""
-  create: false
+  create: true
   type: NodePort
   servicePort: 7500
   targetPort: 80
@@ -76,6 +76,7 @@ role:
 #  url: ""
 #vault:
 #  url: ""
+customImage: {}
 resources:
   requests:
     cpu: "100m"
