@@ -4,7 +4,16 @@ kind: Deployment
 metadata:
   labels:
     app.kubernetes.io/name: {{ .Values.appName }}
+{{- if .Values.customLabels }}
+{{- range $key, $value := .Values.customLabels }}
+    {{ $key }}: {{ $value }}
+{{- end }}
+{{- end }}
+{{- if .Values.deployment.customName }}
+  name: {{ .Values.deployment.customName }}
+{{- else }}
   name: {{ .Values.appName }}
+{{- end }}
 spec:
   replicas: {{ .Values.replicas }}
   selector:

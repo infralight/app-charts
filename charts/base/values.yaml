@@ -57,6 +57,7 @@ metricsService:
 serviceMonitor:
   enabled: false
 service:
+  customName: ""
   create: false
   type: NodePort
   servicePort: 7500
@@ -79,7 +80,7 @@ resources:
   requests:
     cpu: "100m"
     memory: "400Mi"
-
+customLabels: {}
 env: "test"
 account: "1245"
 domain: "domain"
@@ -87,6 +88,8 @@ tag: latest
 region: us-west-2
 image_override: busybox
 ecr: 000000000000.dkr.ecr
+deployment:
+  customName: ""
 appName: app-name
 ecrAppName: ""
 
