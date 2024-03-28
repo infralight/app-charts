@@ -19,6 +19,11 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ .Values.appName }}
+{{- if .Values.customLabels }}
+{{- range $key, $value := .Values.customLabels }}
+      {{ $key }}: {{ $value }}
+{{- end }}
+{{- end }}
   template:
     metadata:
       annotations:
@@ -28,6 +33,11 @@ spec:
       labels:
         app.kubernetes.io/instance: {{ .Values.appName }}
         app.kubernetes.io/name: {{ .Values.appName }}
+{{- if .Values.customLabels }}
+{{- range $key, $value := .Values.customLabels }}
+        {{ $key }}: {{ $value }}
+{{- end }}
+{{- end }}
     spec:
     {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
@@ -62,6 +72,10 @@ spec:
         ports:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.ports "context" $ ) | nindent 10 }}
 {{- end }}
+{{- if .Values.containers.args }}
+        args:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 10 }}
+{{- end }}
 {{- if .Values.containers.command }}
         command:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.command "context" $ ) | nindent 10 }}
@@ -93,7 +107,7 @@ spec:
 {{- end }}
         name: {{ .Values.appName }}
       {{- if .Values.containers.securityContext }}
-        securityContext:	
+        securityContext: 
 {{- toYaml .Values.containers.securityContext | nindent 10 }}
       {{- end }}
 {{- if .Values.readinessProbe }}
@@ -106,4 +120,46 @@ spec:
 {{- end }}
         resources:
 {{- toYaml .Values.resources | nindent 10 }}
+{{- end }}
+{{- if .Values.customImage }}
+      - image: "{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
+        name: {{ .Values.customImage.name }}
+{{- if .Values.customImage.ports }}
+        ports:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.ports "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.customImage.args }}
+        args:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.args "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.customImage.command }}
+        command:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.command "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.customImage.env }}
+        env:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.env "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.customImage.securityContext }}
+        securityContext: 
+{{- toYaml .Values.customImage.securityContext | nindent 10 }}
+{{- end }}
+{{- if .Values.customImage.readinessProbe }}
+        readinessProbe:
+{{- toYaml .Values.customImage.readinessProbe | nindent 10 }}
+{{- end }}
+{{- if .Values.customImage.livenessProbe }}
+        livenessProbe:
+{{- toYaml .Values.customImage.livenessProbe | nindent 10 }}
+{{- end }}
+{{- if .Values.customImage.resources }}
+        resources:
+{{- toYaml .Values.customImage.resources | nindent 10 }}
+{{- end }}
+{{- if .Values.customImage.terminationMessagePath }}
+        terminationMessagePath: {{ .Values.customImage.terminationMessagePath }}
+{{- end }}
+{{- if .Values.customImage.terminationMessagePolicy }}
+        terminationMessagePolicy: {{ .Values.customImage.terminationMessagePolicy }}
+{{- end }}
 {{- end }}
