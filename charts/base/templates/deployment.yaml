@@ -67,13 +67,13 @@ spec:
 {{- toYaml .Values.affinity | nindent 8 }}
 {{- end }} 
       containers:
-      - image: "{{ trimPrefix "_" .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ ne .Values.ecrAppName ""  | ternary .Values.ecrAppName .Values.appName }}:{{ .Values.tag }}"
+        image: "{{ trimPrefix "_" .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ ne .Values.ecrAppName ""  | ternary .Values.ecrAppName .Values.appName }}:{{ .Values.tag }}"
 {{- if .Values.containers.ports }}
         ports:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.ports "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.containers.args }}
-        args:
+      - args:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.containers.command }}
@@ -129,7 +129,7 @@ spec:
     {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.ports "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.customImage.args }}
-        args:
+      - args:
     {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.args "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.customImage.command }}
