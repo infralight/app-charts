@@ -9,8 +9,8 @@ provisioner: {{ .provisioner }}
 volumeBindingMode: WaitForFirstConsumer
 parameters:
   type: {{ .type }}
-  iops: {{ .iops }}
-  throughput: {{ .throughput }}
+  iops: {{ .iops | quote}}
+  throughput: {{ .throughput | quote }}
 reclaimPolicy: {{ .reclaimPolicy }}
 allowVolumeExpansion: true
 {{- end }}
