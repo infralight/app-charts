@@ -122,6 +122,12 @@ spec:
         command:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.command "context" $ ) | nindent 10 }}
 {{- end }}
+{{- if .Values.containers.terminationMessagePath }}
+        terminationMessagePath: {{ .Values.containers.terminationMessagePath }}
+{{- end }}
+{{- if .Values.containers.terminationMessagePolicy }}
+        terminationMessagePolicy: {{ .Values.containers.terminationMessagePolicy }}
+{{- end }}
 {{- if .Values.containers.env }}
         env:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.env "context" $ ) | nindent 10 }}
