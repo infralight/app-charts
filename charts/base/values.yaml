@@ -81,8 +81,7 @@ resources:
   requests:
     cpu: "100m"
     memory: "400Mi"
-customLabels: 
-  control-plane: controller-manager
+customLabels: {}
 env: "test"
 account: "1245"
 domain: "domain"
