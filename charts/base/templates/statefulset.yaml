@@ -4,36 +4,58 @@ kind: StatefulSet
 metadata:
   labels:
     app.kubernetes.io/name: {{ .Values.appName }}
+{{- if .Values.customLabels }}
+{{- range $key, $value := .Values.customLabels }}
+    {{ $key }}: {{ $value }}
+{{- end }}
+{{- end }}
+{{- if .Values.deployment.customName }}
+  name: {{ .Values.deployment.customName }}
+{{- else }}
   name: {{ .Values.appName }}
+{{- end }}
 spec:
   serviceName: "{{ .Values.appName }}"
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ .Values.appName }}
+{{- if .Values.customLabels }}
+{{- range $key, $value := .Values.customLabels }}
+      {{ $key }}: {{ $value }}
+{{- end }}
+{{- end }}
   template:
     metadata:
-      annotations:
-        {{- if .Values.autoReloadConfig }}
-        checksum/configuration: {{ include (print $.Template.BasePath "/" .Values.configmapName ".yaml" ) . | sha256sum }}
-        {{- end }}
       labels:
         app.kubernetes.io/instance: {{ .Values.appName }}
         app.kubernetes.io/name: {{ .Values.appName }}
+{{- if .Values.customLabels }}
+{{- range $key, $value := .Values.customLabels }}
+        {{ $key }}: {{ $value }}
+{{- end }}
+{{- end }}
     spec:
-      {{- if .Values.serviceAccount.create }}
+    {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
-      {{- end }}
+    {{- end }}
       {{- if .Values.volumes }}
       volumes:	
         - name: {{ .Values.volumes.name }}
           persistentVolumeClaim:	
             claimName: {{ .Values.volumes.persistentVolumeClaim.name }}
       {{- end }}
-      {{- if .Values.nodeSelector }}
+    {{- if .Values.securityContext }}
+      securityContext:	
+{{- toYaml .Values.securityContext | nindent 10 }}
+    {{- end }}
+    {{- if .Values.terminationGracePeriodSeconds }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds.seconds }}
+    {{- end }}
+{{- if .Values.nodeSelector }}
       nodeSelector:
-{{- toYaml .Values.nodeSelector | nindent 8 }}
-      {{- end }}
+{{- toYaml .Values.nodeSelector | nindent 10 }}
+{{- end }}
 {{- if .Values.tolerations }}
       tolerations:
 {{- range .Values.tolerations }}
@@ -43,11 +65,78 @@ spec:
           value: "{{ .value }}"
 {{- end }}
 {{- end }}
-      {{- if .Values.affinity }}
+{{- if .Values.affinity }}
       affinity:
-{{- toYaml .Values.affinity | nindent 6 }}
-      {{- end }} 
+{{- toYaml .Values.affinity | nindent 8 }}
+{{- end }} 
+{{- if and ( .Values.autoReloadConfig) ( .Values.kubectlVersion) ( .Values.clusterRole)}}
+      initContainers:
+      - name: check-configmap
+        image: "bitnami/kubectl:{{ .Values.kubectlVersion }}"
+        command: ["/bin/sh", "-c", "CURRENT_RESOURCE_VERSION=$(kubectl get cm your-configmap -ojsonpath='{.metadata.resourceVersion}') && if [ \"$CURRENT_RESOURCE_VERSION\" != \"$OLD_RESOURCE_VERSION\" ]; then kubectl rollout restart deployment/{{- if .Values.deployment.customName }}{{ .Values.deployment.customName }} {{- else }} {{- .Values.appName }} {{- end }}; fi"]
+        env:
+        - name: OLD_RESOURCE_VERSION
+          valueFrom:
+{{- range .Values.configMaps }}
+            configMapKeyRef:
+              name: {{ .name }}
+              key: resourceVersion
+{{- end }}
+{{- end }}
       containers:
+{{- if .Values.customImage }}
+{{- if .Values.customImage.args }}
+      - args:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.args "context" $ ) | nindent 10 }}
+{{- end }}
+      - image: "{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
+{{- if .Values.customImage.volumeMounts }}
+        volumeMounts:
+{{- range .Values.customImage.volumeMounts }}
+          - mountPath: {{ .mountPath }}
+            name: {{ .name }}
+        name: {{ .Values.customImage.name }}
+{{- end }}
+{{- end }}
+{{- if .Values.customImage.ports }}
+        ports:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.ports "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.customImage.command }}
+        command:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.command "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.customImage.env }}
+        env:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.env "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.customImage.securityContext }}
+        securityContext: 
+{{- toYaml .Values.customImage.securityContext | nindent 10 }}
+{{- end }}
+{{- if .Values.customImage.readinessProbe }}
+        readinessProbe:
+{{- toYaml .Values.customImage.readinessProbe | nindent 10 }}
+{{- end }}
+{{- if .Values.customImage.livenessProbe }}
+        livenessProbe:
+{{- toYaml .Values.customImage.livenessProbe | nindent 10 }}
+{{- end }}
+{{- if .Values.customImage.resources }}
+        resources:
+{{- toYaml .Values.customImage.resources | nindent 10 }}
+{{- end }}
+{{- if .Values.customImage.terminationMessagePath }}
+        terminationMessagePath: {{ .Values.customImage.terminationMessagePath }}
+{{- end }}
+{{- if .Values.customImage.terminationMessagePolicy }}
+        terminationMessagePolicy: {{ .Values.customImage.terminationMessagePolicy }}
+{{- end }}
+{{- end }}
+{{- if .Values.containers.args }}
+        args:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 10 }}
+{{- end }}
       - image: "{{ trimPrefix "_" .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ ne .Values.ecrAppName ""  | ternary .Values.ecrAppName .Values.appName }}:{{ .Values.tag }}"
 {{- if .Values.containers.volumeMounts }}
         volumeMounts:
@@ -59,6 +148,16 @@ spec:
 {{- if .Values.containers.ports }}
         ports:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.ports "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.containers.command }}
+        command:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.command "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.containers.terminationMessagePath }}
+        terminationMessagePath: {{ .Values.containers.terminationMessagePath }}
+{{- end }}
+{{- if .Values.containers.terminationMessagePolicy }}
+        terminationMessagePolicy: {{ .Values.containers.terminationMessagePolicy }}
 {{- end }}
 {{- if .Values.containers.env }}
         env:
@@ -85,19 +184,19 @@ spec:
           - secretRef:
               name: {{ .Values.externalsecret.targetname }}
 {{- end }}
+        name: {{ .Values.appName }}
       {{- if .Values.containers.securityContext }}
-        securityContext:	
+        securityContext: 
 {{- toYaml .Values.containers.securityContext | nindent 10 }}
       {{- end }}
-        name: {{ .Values.appName }}
-        {{- if .Values.readinessProbe }}
+{{- if .Values.readinessProbe }}
         readinessProbe:
 {{- toYaml .Values.readinessProbe | nindent 10 }}
-        {{- end }}
-        {{- if .Values.livenessProbe }}
+{{- end }}
+{{- if .Values.livenessProbe }}
         livenessProbe:
 {{- toYaml .Values.livenessProbe | nindent 10 }}
-        {{- end }}
+{{- end }}
         resources:
 {{- toYaml .Values.resources | nindent 10 }}
 {{- if .Values.volumeClaimTemplates }}
