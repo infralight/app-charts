@@ -1,4 +1,4 @@
-useStatefulSet: true
+useStatefulSet: false
 useCronJob: false
 replicas: 1
 namespace: default
@@ -44,29 +44,10 @@ restartPolicy: Always
 autoReloadConfig: false
 configmapName: ""
 containers: {}
-volumes: 
-      name: persistent-storage
-      persistentVolumeClaim:
-        name: iac-code-persistent-ebs-claim
-PersistentVolumeClaim: 
-  create: true
-  name: iac-code-persistent-ebs-claim
-  capacity: 500Gi
-  storageClassName: persistent-ebs-sc
-
+volumes: {}
+PersistentVolumeClaim: {}
 StorageClass: {}
-volumeClaimTemplates: 
-    - metadata:
-        name: iac-code-temp-ebs-claim
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 10Gi
-        storageClassName: ebs-sc
-        volumeMode: Filesystem
-        volumeName: iac-code-temp-ebs-claim
+volumeClaimTemplates: {}
 securityContext: {} 
 terminationGracePeriodSeconds: {}
 volumeClaimTemplate: {}
