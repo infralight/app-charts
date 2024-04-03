@@ -39,9 +39,16 @@ firefly:
     Crawler:
       create: false
 # kubectl should be the same as cluster version
-#kubectlVersion: "1.28.0"
+configMaps:
+- name: firefly-kube-scheduler-azure
+  FETCHER_AWS_REGION: eu-west-1
+  FETCHER_BATCH_INTERVAL: 30s
+- name: firefly-kube-scheduler-azure1
+  FETCHER_AWS_REGION: eu-west-1
+  FETCHER_BATCH_INTERVAL: 30s
+kubectlVersion: "1.28.0"
 restartPolicy: Always
-autoReloadConfig: false
+autoReloadConfig: true
 configmapName: ""
 containers: {}
 volumes: {}
@@ -65,7 +72,7 @@ service:
   targetPort: 80
 
 clusterRole:
-  create: false
+  create: true
 
 role:
   create: false

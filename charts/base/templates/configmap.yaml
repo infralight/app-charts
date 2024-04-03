@@ -4,6 +4,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  version: {{ printf $configMap.name | sha256sum  }}
   name: {{ $configMap.name }}
 data: 
 {{- include "base.tplvalues.render" ( dict "value" $configMap "context" $ ) | nindent 2 }}
