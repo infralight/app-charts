@@ -66,14 +66,14 @@ spec:
       initContainers:
       - name: check-configmap
         image: "bitnami/kubectl:{{ .Values.kubectlVersion }}"
-        command: ["/bin/sh", "-c", "CURRENT_RESOURCE_VERSION=$(kubectl get cm your-configmap -ojsonpath='{.metadata.resourceVersion}') && if [ \"$CURRENT_RESOURCE_VERSION\" != \"$OLD_RESOURCE_VERSION\" ]; then kubectl rollout restart deployment/{{- if .Values.deployment.customName }}{{ .Values.deployment.customName }} {{- else }} {{- .Values.appName }} {{- end }}; fi"]
+        command: ["/bin/sh", "-c", "NEW_CM_VERSION=$(echo -n \"$CONFIG_MAP_DATA\" | sha512sum | awk '{print $1}') && if [ \"$NEW_CM_VERSION\" != \"$OLD_CM_VERSION\" ]; then kubectl rollout restart deployment/{{- if .Values.deployment.customName }}{{ .Values.deployment.customName }} {{- else }} {{- .Values.appName }} {{- end }}; fi"]
         env:
-        - name: OLD_RESOURCE_VERSION
+        - name: OLD_CM_VERSION
           valueFrom:
 {{- range .Values.configMaps }}
             configMapKeyRef:
               name: {{ .name }}
-              key: resourceVersion
+              key: version
 {{- end }}
 {{- end }}
       containers:
