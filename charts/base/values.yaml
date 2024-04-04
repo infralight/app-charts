@@ -38,7 +38,8 @@ firefly:
       create: false
     Crawler:
       create: false
-
+# kubectl should be the same as cluster version
+#kubectlVersion: "1.28.0"
 restartPolicy: Always
 autoReloadConfig: false
 configmapName: ""
