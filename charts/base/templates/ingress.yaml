@@ -38,7 +38,11 @@ spec:
           service:
             name: {{ $backend.svcName }}
             port:
+            {{- if $backend.servicePortName }}
+              name: {{ $backend.servicePortName }}
+            {{- else }}
               number: {{ $backend.servicePort }}
+            {{- end }}
         path: {{ $backend.path }}
         pathType: {{ $backend.pathType }}
       {{- end }}
