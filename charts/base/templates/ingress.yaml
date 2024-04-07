@@ -33,13 +33,15 @@ spec:
   - host: {{ $ingress.dns }}
     http:
       paths:
+      {{- range $backend := $ingress.backends }}
       - backend:
           service:
-            name: {{ $ingress.svcName }}
+            name: {{ $backend.svcName }}
             port:
-              number: {{ $ingress.servicePort }}
-        path: {{ $ingress.path }}
-        pathType: {{ $ingress.pathType }}
+              number: {{ $backend.servicePort }}
+        path: {{ $backend.path }}
+        pathType: Prefix
+      {{- end }}
   tls:
   - hosts:
     - {{ $ingress.dns }}
