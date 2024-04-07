@@ -1,4 +1,4 @@
-{{- if .Values.useStatefulSet }}
+{{- if .Values.useStatefulSet }}ccs
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -39,6 +39,15 @@ spec:
     {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
     {{- end }}
+    {{- if .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      - labelSelector:
+          matchLabels:
+            {{- include "consumer.selectorLabels" . | nindent 12 }}
+        maxSkew: {{ .Values.topologySpreadConstraints.maxSkew }}
+        topologyKey: {{ .Values.topologySpreadConstraints.topologyKey }}
+        whenUnsatisfiable: {{ .Values.topologySpreadConstraints.whenUnsatisfiable }}
+    {{- end }}
       {{- if .Values.volumes }}
       volumes:	
         - name: {{ .Values.volumes.name }}
@@ -69,27 +78,57 @@ spec:
       affinity:
 {{- toYaml .Values.affinity | nindent 8 }}
 {{- end }} 
-{{- if and ( .Values.autoReloadConfig) ( .Values.kubectlVersion) ( .Values.clusterRole)}}
       initContainers:
-      - name: check-configmap
-        image: "bitnami/kubectl:{{ .Values.kubectlVersion }}"
-        command: ["/bin/sh", "-c", "CURRENT_RESOURCE_VERSION=$(kubectl get cm your-configmap -ojsonpath='{.metadata.resourceVersion}') && if [ \"$CURRENT_RESOURCE_VERSION\" != \"$OLD_RESOURCE_VERSION\" ]; then kubectl rollout restart deployment/{{- if .Values.deployment.customName }}{{ .Values.deployment.customName }} {{- else }} {{- .Values.appName }} {{- end }}; fi"]
+{{- if .Values.initContainers }}
+      - image: "{{ .Values.initContainers.repository }}:{{ .Values.initContainers.tag }}"
+{{- if .Values.initContainers.args }}
+        args:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.args "context" $ ) | nindent 10 }}
+{{- end }}
+        name: {{ .Values.initContainers.name }}
+        imagePullPolicy: {{ .Values.initContainers.imagePullPolicy }}
+{{- if .Values.initContainers.ports }}
+        ports:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.ports "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.initContainers.command }}
+        command:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.command "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.initContainers.env }}
         env:
-        - name: OLD_RESOURCE_VERSION
-          valueFrom:
-{{- range .Values.configMaps }}
-            configMapKeyRef:
-              name: {{ .name }}
-              key: resourceVersion
+    {{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.env "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.initContainers.securityContext }}
+        securityContext: 
+{{- toYaml .Values.initContainers.securityContext | nindent 10 }}
+{{- end }}
+{{- if .Values.initContainers.readinessProbe }}
+        readinessProbe:
+{{- toYaml .Values.initContainers.readinessProbe | nindent 10 }}
+{{- end }}
+{{- if .Values.initContainers.livenessProbe }}
+        livenessProbe:
+{{- toYaml .Values.initContainers.livenessProbe | nindent 10 }}
+{{- end }}
+{{- if .Values.initContainers.resources }}
+        resources:
+{{- toYaml .Values.initContainers.resources | nindent 10 }}
+{{- end }}
+{{- if .Values.initContainers.terminationMessagePath }}
+        terminationMessagePath: {{ .Values.initContainers.terminationMessagePath }}
+{{- end }}
+{{- if .Values.initContainers.terminationMessagePolicy }}
+        terminationMessagePolicy: {{ .Values.initContainers.terminationMessagePolicy }}
 {{- end }}
 {{- end }}
       containers:
 {{- if .Values.customImage }}
+      - image: "{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
 {{- if .Values.customImage.args }}
-      - args:
+        args:
     {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.args "context" $ ) | nindent 10 }}
 {{- end }}
-      - image: "{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
 {{- if .Values.customImage.volumeMounts }}
         volumeMounts:
 {{- range .Values.customImage.volumeMounts }}
