@@ -16,7 +16,7 @@ ingresses:
     waf:
       create: false
       arn: ""
-    servicePort: 8080
+    servicePort: 80
 serviceAccount:
   create: false
   name: "sa-name"
