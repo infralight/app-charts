@@ -118,6 +118,12 @@ spec:
         envFrom:
           - secretRef:
               name: {{ .Values.externalsecret.targetname }}
+{{- else if .Values.secretConfigPointer }}
+        envFrom:
+          - configMapRef:
+              name: {{ .Values.secretConfigPointer.name }}
+          - secretRef:
+              name: {{ .Values.secretConfigPointer.secret }}
 {{- end }}
 {{- if .Values.initContainers.securityContext }}
         securityContext: 
@@ -230,6 +236,12 @@ spec:
         envFrom:
           - secretRef:
               name: {{ .Values.externalsecret.targetname }}
+{{- else if .Values.secretConfigPointer }}
+        envFrom:
+          - configMapRef:
+              name: {{ .Values.secretConfigPointer.name }}
+          - secretRef:
+              name: {{ .Values.secretConfigPointer.secret }}
 {{- end }}
         name: {{ .Values.appName }}
       {{- if .Values.containers.securityContext }}
