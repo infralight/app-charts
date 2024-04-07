@@ -1,46 +1,47 @@
-{{- if and (eq .Values.ingress.create true) (eq .Values.service.type "NodePort") -}}
+{{- range $ingress := .Values.ingresses }}
+{{- if and (eq $ingress.enabled true) (eq $.Values.service.type "NodePort") -}}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port":
-      "443", "StatusCode": "HTTP_301"}}'
+    alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
     alb.ingress.kubernetes.io/backend-protocol: HTTP
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:{{ .Values.region }}:{{ trimPrefix "_" .Values.account }}:certificate/{{ .Values.ingress.cert }}
-    alb.ingress.kubernetes.io/healthcheck-path: {{ .Values.ingress.healthcheckpath }}
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:{{ .Values.region }}:{{ trimPrefix "_" .Values.account }}:certificate/{{ $ingress.cert }}
+    alb.ingress.kubernetes.io/healthcheck-path: {{ $ingress.healthcheckpath }}
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
-    alb.ingress.kubernetes.io/scheme: {{ .Values.ingress.schema }}
-    alb.ingress.kubernetes.io/success-codes: {{ .Values.ingress.successcodes }}
-    alb.ingress.kubernetes.io/load-balancer-attributes: {{ .Values.ingress.timeout }}
-    {{- if eq .Values.ingress.schema "internal" }}
-    alb.ingress.kubernetes.io/inbound-cidrs: {{ .Values.cidrs }}
+    alb.ingress.kubernetes.io/scheme: {{ $ingress.schema }}
+    alb.ingress.kubernetes.io/success-codes: {{ $ingress.successcodes }}
+    alb.ingress.kubernetes.io/load-balancer-attributes: {{ $ingress.timeout }}
+    {{- if eq $ingress.schema "internal" }}
+    alb.ingress.kubernetes.io/inbound-cidrs: {{ $.Values.cidrs }}
     {{- end }}
-    {{- if eq .Values.ingress.waf.create true }}
-    alb.ingress.kubernetes.io/wafv2-acl-arn: {{ .Values.ingress.waf.arn }}
+    {{- if eq $ingress.waf.create true }}
+    alb.ingress.kubernetes.io/wafv2-acl-arn: {{ $ingress.waf.arn }}
     {{- end }}
-    external-dns.alpha.kubernetes.io/hostname: {{ .Values.ingress.dns }}.{{ .Values.domain }}
+    external-dns.alpha.kubernetes.io/hostname: {{ $ingress.dns }}.{{ $.Values.domain }}
     kubernetes.io/ingress.class: alb
     kubernetes.io/tls-acme: 'true'
   labels:
-    app.kubernetes.io/instance: {{ .Values.appName }}
-    app.kubernetes.io/name: {{ .Values.appName }}
-  name: {{ .Values.appName }}-ingress
-  namespace: {{ .Values.namespace }}
+    app.kubernetes.io/instance: {{ $.Values.appName }}
+    app.kubernetes.io/name: {{ $.Values.appName }}
+  name: {{ $ingress.name }}
+  namespace: {{ $.Values.namespace }}
 spec:
   rules:
-  - host: {{ .Values.ingress.dns }}.{{ .Values.domain }}
+  - host: {{ $ingress.dns }}.{{ $.Values.domain }}
     http:
       paths:
       - backend:
           service:
-            name: {{ .Values.appName }}-service
+            name: {{ $.Values.appName }}-service
             port:
-              number: {{ .Values.service.servicePort }}
+              number: {{ $ingress.servicePort }}
         path: /*
         pathType: ImplementationSpecific
   tls:
   - hosts:
-    - {{ .Values.ingress.dns }}.{{ .Values.domain }}
-    secretName: {{ .Values.appName }}-tls
+    - {{ $ingress.dns }}.{{ $.Values.domain }}
+    secretName: {{ $.Values.appName }}-tls
+{{- end -}}
 {{- end -}}
