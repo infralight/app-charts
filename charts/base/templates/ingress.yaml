@@ -7,7 +7,7 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/actions.ssl-redirect: '{"Type": "redirect", "RedirectConfig": { "Protocol": "HTTPS", "Port": "443", "StatusCode": "HTTP_301"}}'
     alb.ingress.kubernetes.io/backend-protocol: HTTP
-    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:{{ .Values.region }}:{{ trimPrefix "_" .Values.account }}:certificate/{{ $ingress.cert }}
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:{{ $.Values.region }}:{{ trimPrefix "_" $.Values.account }}:certificate/{{ $ingress.cert }}
     alb.ingress.kubernetes.io/healthcheck-path: {{ $ingress.healthcheckpath }}
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
     alb.ingress.kubernetes.io/scheme: {{ $ingress.schema }}
