@@ -42,6 +42,16 @@ spec:
     {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
     {{- end }}
+    {{- if .Values.topologySpreadConstraints }}
+      topologySpreadConstraints:
+      - labelSelector:
+          matchLabels:
+            app.kubernetes.io/instance: {{ .Values.appName }}
+            app.kubernetes.io/name: {{ .Values.appName }}
+        maxSkew: {{ .Values.topologySpreadConstraints.maxSkew }}
+        topologyKey: {{ .Values.topologySpreadConstraints.topologyKey }}
+        whenUnsatisfiable: {{ .Values.topologySpreadConstraints.whenUnsatisfiable }}
+    {{- end }}
     {{- if .Values.securityContext }}
       securityContext:	
 {{- toYaml .Values.securityContext | nindent 10 }}
@@ -65,14 +75,58 @@ spec:
 {{- if .Values.affinity }}
       affinity:
 {{- toYaml .Values.affinity | nindent 8 }}
+{{- end }}
+      initContainers:
+{{- if .Values.initContainers }}
+      - image: "{{ .Values.initContainers.repository }}:{{ .Values.initContainers.tag }}"
+{{- if .Values.initContainers.args }}
+        args:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.args "context" $ ) | nindent 10 }}
+{{- end }}
+        name: {{ .Values.initContainers.name }}
+        imagePullPolicy: {{ .Values.initContainers.imagePullPolicy }}
+{{- if .Values.initContainers.ports }}
+        ports:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.ports "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.initContainers.command }}
+        command:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.command "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.initContainers.env }}
+        env:
+    {{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.env "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.initContainers.securityContext }}
+        securityContext: 
+{{- toYaml .Values.initContainers.securityContext | nindent 10 }}
+{{- end }}
+{{- if .Values.initContainers.readinessProbe }}
+        readinessProbe:
+{{- toYaml .Values.initContainers.readinessProbe | nindent 10 }}
+{{- end }}
+{{- if .Values.initContainers.livenessProbe }}
+        livenessProbe:
+{{- toYaml .Values.initContainers.livenessProbe | nindent 10 }}
+{{- end }}
+{{- if .Values.initContainers.resources }}
+        resources:
+{{- toYaml .Values.initContainers.resources | nindent 10 }}
+{{- end }}
+{{- if .Values.initContainers.terminationMessagePath }}
+        terminationMessagePath: {{ .Values.initContainers.terminationMessagePath }}
+{{- end }}
+{{- if .Values.initContainers.terminationMessagePolicy }}
+        terminationMessagePolicy: {{ .Values.initContainers.terminationMessagePolicy }}
+{{- end }}
 {{- end }} 
       containers:
 {{- if .Values.customImage }}
+      - image: "{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
 {{- if .Values.customImage.args }}
-      - args:
+        args:
     {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.args "context" $ ) | nindent 10 }}
 {{- end }}
-      - image: "{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
         name: {{ .Values.customImage.name }}
         imagePullPolicy: {{ .Values.customImage.imagePullPolicy }}
 {{- if .Values.customImage.ports }}
