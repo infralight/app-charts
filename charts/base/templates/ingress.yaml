@@ -1,6 +1,5 @@
 {{- range $ingress := .Values.ingresses }}
 {{- if and (eq $ingress.enabled true) (eq $.Values.service.type "NodePort") -}}
----
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -9,14 +8,19 @@ metadata:
     alb.ingress.kubernetes.io/backend-protocol: HTTP
     alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:{{ $.Values.region }}:{{ trimPrefix "_" $.Values.account }}:certificate/{{ $ingress.cert }}
     alb.ingress.kubernetes.io/healthcheck-path: {{ $ingress.healthcheckpath }}
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/listen-ports: {{ $ingress.listenports }}
     alb.ingress.kubernetes.io/scheme: {{ $ingress.schema }}
     alb.ingress.kubernetes.io/success-codes: {{ $ingress.successcodes }}
     alb.ingress.kubernetes.io/wafv2-acl-arn: {{ $ingress.waf.arn }}
     {{- if $ingress.loadBalancerAttributes }}
     alb.ingress.kubernetes.io/load-balancer-attributes: {{ $ingress.loadBalancerAttributes | quote }}
     {{- end }}
-    external-dns.alpha.kubernetes.io/hostname: {{ $ingress.dns }}.{{ $.Values.domain }}
+    external-dns.alpha.kubernetes.io/hostname: {{ $ingress.dns }}
+    {{- if $ingress.externaldns }}
+    external-dns.alpha.kubernetes.io/aws-geolocation-country-code: '*'	
+    external-dns.alpha.kubernetes.io/hostname: {{ $ingress.dns }}
+    external-dns.alpha.kubernetes.io/set-identifier: {{ $ingress.setidentifier }}
+    {{- end }}
     kubernetes.io/ingress.class: alb
     kubernetes.io/tls-acme: 'true'
   labels:
@@ -26,19 +30,20 @@ metadata:
   namespace: {{ $.Values.namespace }}
 spec:
   rules:
-  - host: {{ $ingress.dns }}.{{ $.Values.domain }}
+  - host: {{ $ingress.dns }}
     http:
       paths:
       - backend:
           service:
-            name: {{ $.Values.appName }}-service
+            name: {{ $ingress.svcName }}
             port:
               number: {{ $ingress.servicePort }}
-        path: /*
-        pathType: ImplementationSpecific
+        path: {{ $ingress.path }}
+        pathType: {{ $ingress.pathType }}
   tls:
   - hosts:
-    - {{ $ingress.dns }}.{{ $.Values.domain }}
-    secretName: {{ $.Values.appName }}-tls
+    - {{ $ingress.dns }}
+    secretName: {{ $ingress.secretName }}
+---
 {{- end -}}
 {{- end -}}
