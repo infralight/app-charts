@@ -12,12 +12,9 @@ metadata:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
     alb.ingress.kubernetes.io/scheme: {{ $ingress.schema }}
     alb.ingress.kubernetes.io/success-codes: {{ $ingress.successcodes }}
-    alb.ingress.kubernetes.io/load-balancer-attributes: {{ $ingress.timeout }}
-    {{- if eq $ingress.schema "internal" }}
-    alb.ingress.kubernetes.io/inbound-cidrs: {{ $.Values.cidrs }}
-    {{- end }}
-    {{- if eq $ingress.waf.create true }}
     alb.ingress.kubernetes.io/wafv2-acl-arn: {{ $ingress.waf.arn }}
+    {{- if $ingress.loadBalancerAttributes }}
+    alb.ingress.kubernetes.io/load-balancer-attributes: {{ $ingress.loadBalancerAttributes | quote }}
     {{- end }}
     external-dns.alpha.kubernetes.io/hostname: {{ $ingress.dns }}.{{ $.Values.domain }}
     kubernetes.io/ingress.class: alb
