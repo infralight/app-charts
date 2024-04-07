@@ -43,7 +43,8 @@ spec:
       topologySpreadConstraints:
       - labelSelector:
           matchLabels:
-            {{- include "consumer.selectorLabels" . | nindent 12 }}
+            app.kubernetes.io/instance: {{ .Values.appName }}
+            app.kubernetes.io/name: {{ .Values.appName }}
         maxSkew: {{ .Values.topologySpreadConstraints.maxSkew }}
         topologyKey: {{ .Values.topologySpreadConstraints.topologyKey }}
         whenUnsatisfiable: {{ .Values.topologySpreadConstraints.whenUnsatisfiable }}
