@@ -97,6 +97,27 @@ spec:
         env:
     {{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.env "context" $ ) | nindent 10 }}
 {{- end }}
+{{- if .Values.configMaps }}
+{{- if .Values.externalsecret }}
+        envFrom:
+{{- range .Values.configMaps }}
+          - configMapRef:
+              name: {{ .name }}
+{{- end }}
+          - secretRef:
+              name: {{ .Values.externalsecret.targetname }}
+{{- else }}
+        envFrom:
+{{- range .Values.configMaps }}
+          - configMapRef:
+              name: {{ .name }}
+{{- end }}
+{{- end }}
+{{- else if .Values.externalsecret }}
+        envFrom:
+          - secretRef:
+              name: {{ .Values.externalsecret.targetname }}
+{{- end }}
 {{- if .Values.initContainers.securityContext }}
         securityContext: 
 {{- toYaml .Values.initContainers.securityContext | nindent 10 }}
