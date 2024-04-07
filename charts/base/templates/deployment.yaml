@@ -18,6 +18,7 @@ spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
+      app.kubernetes.io/instance: {{ .Values.appName }}
       app.kubernetes.io/name: {{ .Values.appName }}
 {{- if .Values.customLabels }}
 {{- range $key, $value := .Values.customLabels }}
