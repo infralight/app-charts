@@ -192,11 +192,12 @@ spec:
         terminationMessagePolicy: {{ .Values.customImage.terminationMessagePolicy }}
 {{- end }}
 {{- end }}
+      - image: "{{ .Values.containers.repository }}:{{ .Values.tag }}"
+
 {{- if .Values.containers.args }}
         args:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 10 }}
 {{- end }}
-      - image: "{{ .Values.containers.repository }}:{{ .Values.tag }}"
         imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
 {{- if .Values.containers.ports }}
         ports:
