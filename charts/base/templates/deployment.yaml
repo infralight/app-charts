@@ -190,7 +190,7 @@ spec:
         args:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 10 }}
 {{- end }}
-      - image: "{{ trimPrefix "_" .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ ne .Values.ecrAppName ""  | ternary .Values.ecrAppName .Values.appName }}:{{ .Values.tag }}"
+      - image: "{{ .Values.containers.repository }}:{{ .Values.tag }}"
         imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
 {{- if .Values.containers.ports }}
         ports:
