@@ -21,10 +21,27 @@ firefly:
   role:
     create: false
   crd:
+    Drifts:
+      infrastructure:
+        create: false
+      states:
+        create: false
+    Integration:
+      infrastructure:
+        create: false
+      states:
+        create: false
     crawlers:
       create: false
     DeleteIntegration:
-      create: false
+      infrastructure:
+        create: false
+      states:
+        create: false
+    Fetcher:
+      create: false 
+      maxReplicas: 10000
+      resourceProfile: small6
     Crawler:
       create: false
 # kubectl should be the same as cluster version
