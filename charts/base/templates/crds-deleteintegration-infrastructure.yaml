@@ -1,4 +1,4 @@
-{{- if .Values.firefly.crd.Integration.create }}
+{{- if .Values.firefly.crd.DeleteIntegration.infrastructure.create }}
 ---
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
@@ -6,21 +6,20 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.8.0
   creationTimestamp: null
-  name: integrations.states.gofirefly.io
-  namespace: {{ .Values.namespace }}
+  name: deleteintegrations.infrastructure.gofirefly.io
 spec:
-  group: states.gofirefly.io
+  group: infrastructure.gofirefly.io
   names:
-    kind: Integration
-    listKind: IntegrationList
-    plural: integrations
-    singular: integration
+    kind: DeleteIntegration
+    listKind: DeleteIntegrationList
+    plural: deleteintegrations
+    singular: deleteintegration
   scope: Namespaced
   versions:
     - name: v1beta1
       schema:
         openAPIV3Schema:
-          description: Integration is the Schema for the integrations API
+          description: DeleteIntegration is the Schema for the delete integration API
           properties:
             apiVersion:
               description: 'APIVersion defines the versioned schema of this representation
@@ -35,26 +34,22 @@ spec:
             metadata:
               type: object
             spec:
-              description: IntegrationSpec defines the desired state of Integration
+              description: DeleteIntegrationSpec defines the desired state of DeleteIntegration
               properties:
-                accountId:
-                  description: AccountId the accountId of the integration
+                deleteIntegrationSqsUrl:
+                  description: DeleteIntegrationSqsUrl the sqs url for deleted integrations
                   type: string
                 suspend:
                   description: Suspend tells the controller to suspend the reconciliation
                     of this Integration.
                   type: boolean
-                type:
-                  description: Type of integration provider you use
-                  type: string
               required:
-                - accountId
-                - type
+                - deleteIntegrationSqsUrl
               type: object
             status:
               default:
                 observedGeneration: -1
-              description: IntegrationStatus defines the observed state of Integration
+              description: DeleteIntegrationStatus defines the observed state of DeleteIntegration
               properties:
                 conditions:
                   items:
