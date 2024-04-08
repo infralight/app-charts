@@ -4,19 +4,7 @@ replicas: 1
 namespace: default
 CronJob:
   schedule: "0 * * * *"
-ingresses:
-  - name: ingress1
-    enabled: false
-    dns: example1
-    cert: cert1
-    healthcheckpath: /health1
-    schema: internal
-    successcodes: 200
-    timeout: 60
-    waf:
-      create: false
-      arn: ""
-    servicePort: 80
+ingresses: {}
 serviceAccount:
   create: false
   name: "sa-name"
