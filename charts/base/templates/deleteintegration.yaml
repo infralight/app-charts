@@ -1,4 +1,4 @@
-{{- if .Values.firefly.crd.DeleteIntegration.create }}
+{{- if .Values.firefly.crd.DeleteIntegration.states.create }}
 ---
 apiVersion: states.gofirefly.io/v1beta1
 kind: DeleteIntegration
