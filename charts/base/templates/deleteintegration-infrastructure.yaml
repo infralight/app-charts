@@ -1,0 +1,10 @@
+{{- if .Values.firefly.crd.DeleteIntegration.infrastructure.create }}
+---
+apiVersion: infrastructure.gofirefly.io/v1beta1
+kind: DeleteIntegration
+metadata:
+  name: delete-integration-prod-v1beta1
+  namespace: {{ .Values.namespace }}
+spec:
+  deleteIntegrationSqsUrl: https://sqs.{{ .Values.region }}.amazonaws.com/{{ trimPrefix "_" .Values.account }}/{{ .Values.env }}-flywheel-delete-integration-dispatcher-sqs{{ .Values.cluster_suffix}}
+{{- end }}
