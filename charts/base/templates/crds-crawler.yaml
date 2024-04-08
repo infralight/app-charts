@@ -5,6 +5,7 @@ metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.8.0
   name: crawlers.states.gofirefly.io
+  namespace: {{ .Values.namespace }}
 spec:
   group: states.gofirefly.io
   names:
