@@ -1,0 +1,15 @@
+{{- if .Values.firefly.crd.Fetcher.create }}
+apiVersion: infrastructure.gofirefly.io/v1beta1
+kind: Fetcher
+metadata:
+  name: fetchers-prod-v1
+  namespace: {{ .Values.namespace }}
+spec:
+  maxReplicas: {{ .Values.firefly.crd.Fetcher.maxReplicas }}
+  priorityQueue:
+    url: "https://sqs.{{ .Values.region }}.amazonaws.com/{{ trimPrefix "_" .Values.account }}/{{ .Values.env }}-flywheel-fetchers-dispatcher-priority-sqs{{ .Values.cluster_suffix}}"
+  queue:
+    url: "https://sqs.{{ .Values.region }}.amazonaws.com/{{ trimPrefix "_" .Values.account }}/{{ .Values.env }}-flywheel-fetchers-dispatcher-sqs{{ .Values.cluster_suffix}}"
+  resourceProfile: {{ .Values.firefly.crd.Fetcher.resourceProfile }}
+  roleARN: arn:aws:iam::{{ trimPrefix "_" .Values.account }}:role/{{ .Values.env }}-flywheel-producer-scheduler-oidc
+{{- end }}
