@@ -12,6 +12,9 @@ metadata:
     alb.ingress.kubernetes.io/listen-ports: '{{ $ingress.listenports }}'
     alb.ingress.kubernetes.io/scheme: '{{ $ingress.schema }}'
     alb.ingress.kubernetes.io/success-codes: '{{ $ingress.successcodes }}'
+    {{- if $ingress.cidrs }}
+    alb.ingress.kubernetes.io/inbound-cidrs: '{{ $ingress.cidrs }}'
+    {{- end }}
     {{- if $ingress.waf }}
     alb.ingress.kubernetes.io/wafv2-acl-arn: {{ $ingress.waf.arn }}
     {{- end }}
