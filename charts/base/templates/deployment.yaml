@@ -79,7 +79,7 @@ spec:
 {{- end }}
       initContainers:
 {{- if .Values.initContainers }}
-      - image: "{{ .Values.initContainers.repository }}:{{ .Values.initContainers.tag }}"
+      - image: "{{ .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.initContainers.repository }}:{{ .Values.initContainers.tag }}"
 {{- if .Values.initContainers.args }}
         args:
     {{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.args "context" $ ) | nindent 10 }}
@@ -150,7 +150,7 @@ spec:
 {{- end }} 
       containers:
 {{- if .Values.customImage }}
-      - image: "{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
+      - image: "{{ .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
 {{- if .Values.customImage.args }}
         args:
     {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.args "context" $ ) | nindent 10 }}
@@ -192,8 +192,7 @@ spec:
         terminationMessagePolicy: {{ .Values.customImage.terminationMessagePolicy }}
 {{- end }}
 {{- end }}
-      - image: "{{ .Values.containers.repository }}:{{ .Values.tag }}"
-
+      - image: "{{ .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.containers.repository }}:{{ if .Values.containers.tag }}{{ .Values.containers.tag }}{{ else }}{{ .Values.tag }}{{ end }}"
 {{- if .Values.containers.args }}
         args:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 10 }}
