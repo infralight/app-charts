@@ -198,10 +198,6 @@ spec:
         terminationMessagePolicy: {{ .Values.customImage.terminationMessagePolicy }}
 {{- end }}
 {{- end }}
-{{- if .Values.containers.args }}
-        args:
-{{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 10 }}
-{{- end }}
       - image: "{{ .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.containers.repository }}:{{ if .Values.containers.tag }}{{ .Values.containers.tag }}{{ else }}{{ .Values.tag }}{{ end }}"
 {{- if .Values.containers.args }}
         args:
