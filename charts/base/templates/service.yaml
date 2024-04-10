@@ -6,7 +6,7 @@ metadata:
 {{- if .Values.service.customName }}
   name: {{ .Values.service.customName }}
 {{- else }}
-  name: {{ .Values.appName }}-service
+  name: {{ .Values.appName }}
 {{- end }}
   namespace: {{ .Values.namespace }}
   labels:
