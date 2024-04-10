@@ -13,9 +13,7 @@ affinity: {}
 nodeSelector: {}
 tolerations: {}
 livenessProbe: {}
-
 readinessProbe: {}
-
 firefly:
   clusterRole:
     create: false
@@ -71,10 +69,8 @@ service:
   type: NodePort
   servicePort: 7500
   targetPort: 80
-
 clusterRole:
   create: false
-
 role:
   create: false
   rules: {}
