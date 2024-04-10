@@ -55,14 +55,14 @@ spec:
     {{- end }}
     {{- if .Values.securityContext }}
       securityContext:	
-{{- toYaml .Values.securityContext | nindent 10 }}
+{{- toYaml .Values.securityContext | nindent 8 }}
     {{- end }}
     {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds.seconds }}
     {{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
-{{- toYaml .Values.nodeSelector | nindent 10 }}
+{{- toYaml .Values.nodeSelector | nindent 8 }}
 {{- end }}
 {{- if .Values.tolerations }}
       tolerations:
@@ -75,7 +75,7 @@ spec:
 {{- end }}
 {{- if .Values.affinity }}
       affinity:
-{{- toYaml .Values.affinity | nindent 10 }}
+{{- toYaml .Values.affinity | nindent 8 }}
 {{- end }}
       initContainers:
 {{- if .Values.initContainers }}

@@ -1,4 +1,4 @@
-useStatefulSet: false
+useStatefulSet: true
 useCronJob: false
 replicas: 1
 namespace: default
@@ -8,7 +8,25 @@ ingresses: {}
 serviceAccount:
   create: false
   name: "sa-name"
-
+StatefulSet: {}
+affinity:
+   nodeAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+       nodeSelectorTerms:
+         - matchExpressions:
+             - key: karpenter.firefly.ai/network
+               operator: In
+               values:
+                 - "private"
+   podAffinity:
+     requiredDuringSchedulingIgnoredDuringExecution:
+       - labelSelector:
+           matchExpressions:
+             - key: app.kubernetes.io/name
+               operator: In
+               values:
+                 - iac-code-indexer
+         topologyKey: kubernetes.io/hostname
 nodeSelector: {}
 tolerations: {}
 livenessProbe: {}
@@ -44,6 +62,7 @@ firefly:
       resourceProfile: small6
     Crawler:
       create: false
+  
 # kubectl should be the same as cluster version
 #kubectlVersion: "1.28.0"
 restartPolicy: Always

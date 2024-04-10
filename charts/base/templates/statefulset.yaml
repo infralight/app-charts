@@ -1,4 +1,4 @@
-{{- if .Values.useStatefulSet }}ccs
+{{- if .Values.useStatefulSet }}
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -9,8 +9,8 @@ metadata:
     {{ $key }}: {{ $value }}
 {{- end }}
 {{- end }}
-{{- if .Values.deployment.customName }}
-  name: {{ .Values.deployment.customName }}
+{{- if .Values.StatefulSet.customName }}
+  name: {{ .Values.StatefulSet.customName }}
 {{- else }}
   name: {{ .Values.appName }}
 {{- end }}
@@ -49,22 +49,22 @@ spec:
         topologyKey: {{ .Values.topologySpreadConstraints.topologyKey }}
         whenUnsatisfiable: {{ .Values.topologySpreadConstraints.whenUnsatisfiable }}
     {{- end }}
-      {{- if .Values.volumes }}
-      volumes:	
-        - name: {{ .Values.volumes.name }}
-          persistentVolumeClaim:	
-            claimName: {{ .Values.volumes.persistentVolumeClaim.name }}
-      {{- end }}
+    {{- if .Values.volumes }}
+    volumes:
+      - name: {{ .Values.volumes.name }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.volumes.persistentVolumeClaim.name }}
+    {{- end }}
     {{- if .Values.securityContext }}
-      securityContext:	
-{{- toYaml .Values.securityContext | nindent 10 }}
+      securityContext:
+{{- toYaml .Values.securityContext | nindent 8 }}
     {{- end }}
     {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds.seconds }}
     {{- end }}
 {{- if .Values.nodeSelector }}
       nodeSelector:
-{{- toYaml .Values.nodeSelector | nindent 10 }}
+{{- toYaml .Values.nodeSelector | nindent 8 }}
 {{- end }}
 {{- if .Values.tolerations }}
       tolerations:
@@ -78,30 +78,57 @@ spec:
 {{- if .Values.affinity }}
       affinity:
 {{- toYaml .Values.affinity | nindent 8 }}
-{{- end }} 
+{{- end }}
       initContainers:
 {{- if .Values.initContainers }}
-      - image: "{{ .Values.initContainers.repository }}:{{ .Values.initContainers.tag }}"
+      - image: "{{ .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.initContainers.repository }}:{{ .Values.initContainers.tag }}"
 {{- if .Values.initContainers.args }}
         args:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.args "context" $ ) | nindent 10 }}
+{{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.args "context" $ ) | nindent 10 }}
 {{- end }}
         name: {{ .Values.initContainers.name }}
         imagePullPolicy: {{ .Values.initContainers.imagePullPolicy }}
 {{- if .Values.initContainers.ports }}
         ports:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.ports "context" $ ) | nindent 10 }}
+{{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.ports "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.initContainers.command }}
         command:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.command "context" $ ) | nindent 10 }}
+{{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.command "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.initContainers.env }}
         env:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.env "context" $ ) | nindent 10 }}
+{{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.env "context" $ ) | nindent 10 }}
+{{- end }}
+{{- if .Values.configMaps }}
+{{- if .Values.externalsecret }}
+        envFrom:
+{{- range .Values.configMaps }}
+          - configMapRef:
+              name: {{ .name }}
+{{- end }}
+          - secretRef:
+              name: {{ .Values.externalsecret.targetname }}
+{{- else }}
+        envFrom:
+{{- range .Values.configMaps }}
+          - configMapRef:
+              name: {{ .name }}
+{{- end }}
+{{- end }}
+{{- else if .Values.externalsecret }}
+        envFrom:
+          - secretRef:
+              name: {{ .Values.externalsecret.targetname }}
+{{- else if .Values.secretConfigPointer }}
+        envFrom:
+          - configMapRef:
+              name: {{ .Values.secretConfigPointer.name }}
+          - secretRef:
+              name: {{ .Values.secretConfigPointer.secret }}
 {{- end }}
 {{- if .Values.initContainers.securityContext }}
-        securityContext: 
+        securityContext:
 {{- toYaml .Values.initContainers.securityContext | nindent 10 }}
 {{- end }}
 {{- if .Values.initContainers.readinessProbe }}
@@ -125,33 +152,27 @@ spec:
 {{- end }}
       containers:
 {{- if .Values.customImage }}
-      - image: "{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
+      - image: "{{ .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
 {{- if .Values.customImage.args }}
         args:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.args "context" $ ) | nindent 10 }}
+{{- include "base.tplvalues.render" ( dict "value" .Values.customImage.args "context" $ ) | nindent 10 }}
 {{- end }}
-{{- if .Values.customImage.volumeMounts }}
-        volumeMounts:
-{{- range .Values.customImage.volumeMounts }}
-          - mountPath: {{ .mountPath }}
-            name: {{ .name }}
         name: {{ .Values.customImage.name }}
-{{- end }}
-{{- end }}
+        imagePullPolicy: {{ .Values.customImage.imagePullPolicy }}
 {{- if .Values.customImage.ports }}
         ports:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.ports "context" $ ) | nindent 10 }}
+{{- include "base.tplvalues.render" ( dict "value" .Values.customImage.ports "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.customImage.command }}
         command:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.command "context" $ ) | nindent 10 }}
+{{- include "base.tplvalues.render" ( dict "value" .Values.customImage.command "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.customImage.env }}
         env:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.env "context" $ ) | nindent 10 }}
+{{- include "base.tplvalues.render" ( dict "value" .Values.customImage.env "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.customImage.securityContext }}
-        securityContext: 
+        securityContext:
 {{- toYaml .Values.customImage.securityContext | nindent 10 }}
 {{- end }}
 {{- if .Values.customImage.readinessProbe }}
@@ -175,23 +196,21 @@ spec:
 {{- end }}
 {{- if .Values.containers.args }}
         args:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 10 }}
+{{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 10 }}
 {{- end }}
-      - image: "{{ trimPrefix "_" .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ ne .Values.ecrAppName ""  | ternary .Values.ecrAppName .Values.appName }}:{{ .Values.tag }}"
-{{- if .Values.containers.volumeMounts }}
-        volumeMounts:
-{{- range .Values.containers.volumeMounts }}
-          - mountPath: {{ .mountPath }}
-            name: {{ .name }}
+      - image: "{{ .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.containers.repository }}:{{ if .Values.containers.tag }}{{ .Values.containers.tag }}{{ else }}{{ .Values.tag }}{{ end }}"
+{{- if .Values.containers.args }}
+        args:
+{{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 10 }}
 {{- end }}
-{{- end }}
+        imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
 {{- if .Values.containers.ports }}
         ports:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.ports "context" $ ) | nindent 10 }}
+{{- include "base.tplvalues.render" ( dict "value" .Values.containers.ports "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.containers.command }}
         command:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.command "context" $ ) | nindent 10 }}
+{{- include "base.tplvalues.render" ( dict "value" .Values.containers.command "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.containers.terminationMessagePath }}
         terminationMessagePath: {{ .Values.containers.terminationMessagePath }}
@@ -201,7 +220,7 @@ spec:
 {{- end }}
 {{- if .Values.containers.env }}
         env:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.env "context" $ ) | nindent 10 }}
+{{- include "base.tplvalues.render" ( dict "value" .Values.containers.env "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.configMaps }}
 {{- if .Values.externalsecret }}
@@ -223,10 +242,16 @@ spec:
         envFrom:
           - secretRef:
               name: {{ .Values.externalsecret.targetname }}
+{{- else if .Values.secretConfigPointer }}
+        envFrom:
+          - configMapRef:
+              name: {{ .Values.secretConfigPointer.name }}
+          - secretRef:
+              name: {{ .Values.secretConfigPointer.secret }}
 {{- end }}
         name: {{ .Values.appName }}
       {{- if .Values.containers.securityContext }}
-        securityContext: 
+        securityContext:
 {{- toYaml .Values.containers.securityContext | nindent 10 }}
       {{- end }}
 {{- if .Values.readinessProbe }}
