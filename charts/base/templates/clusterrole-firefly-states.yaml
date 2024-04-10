@@ -1,0 +1,172 @@
+{{- if .Values.firefly.clusterRole.states.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Values.appName }}-metrics-reader
+rules:
+  - nonResourceURLs:
+      - /metrics
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Values.appName }}-proxy-role
+rules:
+  - apiGroups:
+      - authentication.k8s.io
+    resources:
+      - tokenreviews
+    verbs:
+      - create
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+    verbs:
+      - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  name: {{ .Values.appName }}-manager-role
+rules:
+  - apiGroups:
+      - batch
+    resources:
+      - jobs
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - endpoints
+      - events
+      - namespaces
+      - persistentvolumeclaims
+      - pods
+      - secrets
+      - serviceaccounts
+      - services
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - states.gofirefly.io
+    resources:
+      - crawlers
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - states.gofirefly.io
+    resources:
+      - crawlers/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - states.gofirefly.io
+    resources:
+      - crawlers/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - states.gofirefly.io
+    resources:
+      - deleteintegrations
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - states.gofirefly.io
+    resources:
+      - deleteintegrations/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - states.gofirefly.io
+    resources:
+      - deleteintegrations/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - states.gofirefly.io
+    resources:
+      - integrations
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - states.gofirefly.io
+    resources:
+      - integrations/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - states.gofirefly.io
+    resources:
+      - integrations/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - states.gofirefly.io
+    resources:
+      - mappers
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - states.gofirefly.io
+    resources:
+      - mappers/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - states.gofirefly.io
+    resources:
+      - mappers/status
+    verbs:
+      - get
+      - patch
+      - update
+{{- end }}

@@ -16,7 +16,10 @@ livenessProbe: {}
 readinessProbe: {}
 firefly:
   clusterRole:
-    create: false
+    states:
+      create: false
+    infrastructure:
+      create: false
   role:
     create: false
   crd:
