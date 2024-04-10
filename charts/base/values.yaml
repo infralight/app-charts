@@ -1,4 +1,4 @@
-useStatefulSet: true
+useStatefulSet: false
 useCronJob: false
 replicas: 1
 namespace: default
@@ -9,24 +9,7 @@ serviceAccount:
   create: false
   name: "sa-name"
 StatefulSet: {}
-affinity:
-   nodeAffinity:
-     requiredDuringSchedulingIgnoredDuringExecution:
-       nodeSelectorTerms:
-         - matchExpressions:
-             - key: karpenter.firefly.ai/network
-               operator: In
-               values:
-                 - "private"
-   podAffinity:
-     requiredDuringSchedulingIgnoredDuringExecution:
-       - labelSelector:
-           matchExpressions:
-             - key: app.kubernetes.io/name
-               operator: In
-               values:
-                 - iac-code-indexer
-         topologyKey: kubernetes.io/hostname
+affinity: {}
 nodeSelector: {}
 tolerations: {}
 livenessProbe: {}
