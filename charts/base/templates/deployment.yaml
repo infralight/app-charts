@@ -75,7 +75,7 @@ spec:
 {{- end }}
 {{- if .Values.affinity }}
       affinity:
-{{- toYaml .Values.affinity | nindent 8 }}
+{{- toYaml .Values.affinity | nindent 10 }}
 {{- end }}
       initContainers:
 {{- if .Values.initContainers }}
