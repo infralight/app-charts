@@ -150,7 +150,7 @@ spec:
 {{- end }} 
       containers:
 {{- if .Values.customImage }}
-      - image: "{{ .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
+      - image: "{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
 {{- if .Values.customImage.args }}
         args:
     {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.args "context" $ ) | nindent 10 }}
