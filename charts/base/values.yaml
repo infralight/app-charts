@@ -51,11 +51,52 @@ firefly:
 restartPolicy: Always
 autoReloadConfig: false
 configmapName: ""
-containers: {}
-volumes: {}
-PersistentVolumeClaim: {}
-StorageClass: {}
-volumeClaimTemplates: {}
+containers:
+  repository: "iac-code-indexer"
+  securityContext: {}
+  ports:
+    - containerPort: 7500
+      name: http
+      protocol: TCP
+  volumeMounts:
+    - name: persistent-storage
+      mountPath: /persistent-ebs
+    - name: iac-code-temp-ebs-claim
+      mountPath: /temp-ebs
+volumes:
+  name: persistent-storage
+  persistentVolumeClaim:
+    name: iac-code-persistent-ebs-claim
+PersistentVolumeClaim:
+  create: true
+  name: iac-code-persistent-ebs-claim
+  capacity: 50Gi
+  storageClassName: persistent-ebs-sc
+StorageClass:
+  - name: persistent-ebs-sc
+    create: true
+    provisioner: ebs.csi.aws.com
+    type: gp3
+    iops: '3000'
+    throughput: '125'
+    reclaimPolicy: Retain
+  - name: temp-ebs-sc
+    create: true
+    provisioner: ebs.csi.aws.com
+    type: gp3
+    iops: '3000'
+    throughput: '125'
+    reclaimPolicy: Retain
+volumeClaimTemplates:
+  - metadata:
+      name: iac-code-temp-ebs-claim
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: temp-ebs-sc
+      resources:
+        requests:
+          storage: 50Gi
 securityContext: {} 
 terminationGracePeriodSeconds: {}
 volumeClaimTemplate: {}
@@ -116,43 +157,6 @@ keda:
     fallback:
       failureThreshold: 10
       replicas: 1  
-# Pod Affinity Configuration
-podAffinity:
-  preferred:
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-            - key: app
-              operator: In
-              values:
-                - my-app
-        topologyKey: kubernetes.io/hostname
-  required:
-    - podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-            - key: app
-              operator: In
-              values:
-                - my-app
-        topologyKey: kubernetes.io/hostname
-
-# Node Affinity Configuration
-nodeAffinity:
-  required:
-    - matchExpressions:
-        - key: node-role
-          operator: In
-          values:
-            - my-node-role
-  preferred:
-    - matchExpressions:
-        - key: zone
-          operator: In
-          values:
-            - us-west1-a
-
 pdb:
   enabled: false
   minAvailable: 1
