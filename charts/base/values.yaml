@@ -51,52 +51,11 @@ firefly:
 restartPolicy: Always
 autoReloadConfig: false
 configmapName: ""
-containers:
-  repository: "iac-code-indexer"
-  securityContext: {}
-  ports:
-    - containerPort: 7500
-      name: http
-      protocol: TCP
-  volumeMounts:
-    - name: persistent-storage
-      mountPath: /persistent-ebs
-    - name: iac-code-temp-ebs-claim
-      mountPath: /temp-ebs
-volumes:
-  name: persistent-storage
-  persistentVolumeClaim:
-    name: iac-code-persistent-ebs-claim
-PersistentVolumeClaim:
-  create: true
-  name: iac-code-persistent-ebs-claim
-  capacity: 50Gi
-  storageClassName: persistent-ebs-sc
-StorageClass:
-  - name: persistent-ebs-sc
-    create: true
-    provisioner: ebs.csi.aws.com
-    type: gp3
-    iops: '3000'
-    throughput: '125'
-    reclaimPolicy: Retain
-  - name: temp-ebs-sc
-    create: true
-    provisioner: ebs.csi.aws.com
-    type: gp3
-    iops: '3000'
-    throughput: '125'
-    reclaimPolicy: Retain
-volumeClaimTemplates:
-  - metadata:
-      name: iac-code-temp-ebs-claim
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      storageClassName: temp-ebs-sc
-      resources:
-        requests:
-          storage: 50Gi
+containers: {}
+volumes: {}
+PersistentVolumeClaim: {}
+StorageClass: {}
+volumeClaimTemplates: {}
 securityContext: {} 
 terminationGracePeriodSeconds: {}
 volumeClaimTemplate: {}
