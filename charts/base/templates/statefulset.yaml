@@ -45,19 +45,19 @@ spec:
     {{- end }}
     {{- if .Values.topologySpreadConstraints }}
       topologySpreadConstraints:
-      - labelSelector:
-          matchLabels:
-            app.kubernetes.io/instance: {{ .Values.appName }}
-            app.kubernetes.io/name: {{ .Values.appName }}
-        maxSkew: {{ .Values.topologySpreadConstraints.maxSkew }}
-        topologyKey: {{ .Values.topologySpreadConstraints.topologyKey }}
-        whenUnsatisfiable: {{ .Values.topologySpreadConstraints.whenUnsatisfiable }}
+        - labelSelector:
+            matchLabels:
+              app.kubernetes.io/instance: {{ .Values.appName }}
+              app.kubernetes.io/name: {{ .Values.appName }}
+          maxSkew: {{ .Values.topologySpreadConstraints.maxSkew }}
+          topologyKey: {{ .Values.topologySpreadConstraints.topologyKey }}
+          whenUnsatisfiable: {{ .Values.topologySpreadConstraints.whenUnsatisfiable }}
     {{- end }}
     {{- if .Values.volumes }}
-    volumes:
-      - name: {{ .Values.volumes.name }}
-        persistentVolumeClaim:
-          claimName: {{ .Values.volumes.persistentVolumeClaim.name }}
+      volumes:
+        - name: {{ .Values.volumes.name }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.volumes.persistentVolumeClaim.name }}
     {{- end }}
     {{- if .Values.securityContext }}
       securityContext:
@@ -265,17 +265,17 @@ spec:
         resources:
 {{- toYaml .Values.resources | nindent 10 }}
 {{- if .Values.volumeClaimTemplates }}
-  volumeClaimTemplates:
-{{- range .Values.volumeClaimTemplates }}
-  - metadata:
-      name: {{ .metadata.name }}
-    spec:
-      accessModes:
-        - {{ index .spec.accessModes 0 | quote }}
-      storageClassName: {{ .spec.storageClassName | quote }}
-      resources:
-        requests:
-          storage: {{ .spec.resources.requests.storage }}
+      volumeClaimTemplates:
+      {{- range .Values.volumeClaimTemplates }}
+        - metadata:
+            name: {{ .metadata.name }}
+          spec:
+            accessModes:
+              - {{ index .spec.accessModes 0 | quote }}
+            storageClassName: {{ .spec.storageClassName | quote }}
+            resources:
+              requests:
+                storage: {{ .spec.resources.requests.storage }}
 {{- end }}
 {{- end }}
 {{- end }}
