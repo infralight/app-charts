@@ -1,4 +1,4 @@
-{{- if .Values.firefly.clusterRole.create }}
+{{- if or .Values.firefly.clusterRole.states.create .Values.firefly.clusterRole.infrastructure.create }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
