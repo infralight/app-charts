@@ -265,17 +265,17 @@ spec:
         resources:
 {{- toYaml .Values.resources | nindent 10 }}
 {{- if .Values.volumeClaimTemplates }}
-      volumeClaimTemplates:
+  volumeClaimTemplates:
 {{- range .Values.volumeClaimTemplates }}
-      - metadata:
-          name: {{ .metadata.name }}
-        spec:
-          accessModes:
-            - {{ index .spec.accessModes 0 | quote }}
-          storageClassName: {{ .spec.storageClassName | quote }}
-          resources:
-            requests:
-              storage: {{ .spec.resources.requests.storage }}
+  - metadata:
+      name: {{ .metadata.name }}
+    spec:
+      accessModes:
+        - {{ index .spec.accessModes 0 | quote }}
+      storageClassName: {{ .spec.storageClassName | quote }}
+      resources:
+        requests:
+          storage: {{ .spec.resources.requests.storage }}
 {{- end }}
 {{- end }}
 {{- end }}
