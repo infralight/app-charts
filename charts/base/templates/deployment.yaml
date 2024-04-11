@@ -236,10 +236,18 @@ spec:
         envFrom:
           - secretRef:
               name: {{ .Values.externalsecret.targetname }}
-{{- else if .Values.secretConfigPointer }}
+{{- else if and (.Values.secretConfigPointer.name) (.Values.secretConfigPointer.secret )}}
         envFrom:
           - configMapRef:
               name: {{ .Values.secretConfigPointer.name }}
+          - secretRef:
+              name: {{ .Values.secretConfigPointer.secret }}
+{{- else if .Values.secretConfigPointer.name }}
+        envFrom:
+          - configMapRef:
+              name: {{ .Values.secretConfigPointer.name }}
+{{- else if .Values.secretConfigPointer.secret }}
+        envFrom:
           - secretRef:
               name: {{ .Values.secretConfigPointer.secret }}
 {{- end }}
