@@ -17,7 +17,6 @@ spec:
     apiVersion: apps/v1
     kind: {{ .Values.keda.kind }}
     name: {{ .Values.appName }}
-  ScaleTargetKind: 
   triggers:
     - metadata:
         awsRegion: {{ .Values.region }}
