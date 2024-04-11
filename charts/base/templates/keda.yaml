@@ -14,7 +14,10 @@ spec:
   minReplicaCount: {{ .Values.keda.config.minReplicaCount }}
   pollingInterval: {{ .Values.keda.config.pollingInterval }}
   scaleTargetRef:
+    apiVersion: {{ .Values.keda.config.apiVersion }}
+    kind: {{ .Values.keda.config.kind }}
     name: {{ .Values.appName }}
+  ScaleTargetKind: 
   triggers:
     - metadata:
         awsRegion: {{ .Values.region }}
