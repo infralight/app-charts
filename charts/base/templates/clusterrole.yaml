@@ -2,7 +2,11 @@
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
+{{- if .Values.clusterRole.customName }}
+  name: {{ .Values.clusterRole.customName }}
+{{- else }}
   name: {{ .Values.appName }}
+{{- end }}
 rules:
 {{- range $index, $rule := .Values.clusterRole.rules }}
   - apiGroups:
