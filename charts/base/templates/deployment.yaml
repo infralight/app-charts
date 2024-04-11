@@ -216,37 +216,32 @@ spec:
         env:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.env "context" $ ) | nindent 10 }}
 {{- end }}
-
-{{- $configMapsExist := .Values.configMaps }}
-{{- $externalSecretExist := .Values.externalsecret }}
-{{- $secretConfigPointerExist := or .Values.secretConfigPointer.name .Values.secretConfigPointer.secret }}
-{{- $envFrom := list }}
-{{- if and $configMapsExist $externalSecretExist }}
-{{- $envFrom = append $envFrom (dict "configMapRef" (dict "name" $configMapsExist.name)) }}
-{{- $envFrom = append $envFrom (dict "secretRef" (dict "name" $externalSecretExist.targetname)) }}
-{{- else if $configMapsExist }}
-{{- range $configMap := $configMapsExist }}
-{{- if $configMap.name }}
-{{- $envFrom = append $envFrom (dict "configMapRef" (dict "name" $configMap.name)) }}
-{{- end }}
-{{- end }}
-{{- else if $externalSecretExist }}
-{{- $envFrom = append $envFrom (dict "secretRef" (dict "name" $externalSecretExist.targetname)) }}
-{{- end }}
-
-{{- if $secretConfigPointerExist }}
-{{- if .Values.secretConfigPointer.name }}
-{{- $envFrom = append $envFrom (dict "configMapRef" (dict "name" .Values.secretConfigPointer.name)) }}
-{{- end }}
-{{- if .Values.secretConfigPointer.secret }}
-{{- $envFrom = append $envFrom (dict "secretRef" (dict "name" .Values.secretConfigPointer.secret)) }}
-{{- end }}
-{{- end }}
-{{- if $envFrom }}
+{{- if .Values.configMaps }}
+{{- if .Values.externalsecret }}
         envFrom:
-{{- range $item := $envFrom }}
-        - {{ toYaml $item | nindent 10 | trim }}
+{{- range .Values.configMaps }}
+          - configMapRef:
+              name: {{ .name }}
 {{- end }}
+          - secretRef:
+              name: {{ .Values.externalsecret.targetname }}
+{{- else }}
+        envFrom:
+{{- range .Values.configMaps }}
+          - configMapRef:
+              name: {{ .name }}
+{{- end }}
+{{- end }}
+{{- else if .Values.externalsecret }}
+        envFrom:
+          - secretRef:
+              name: {{ .Values.externalsecret.targetname }}
+{{- else if .Values.secretConfigPointer }}
+        envFrom:
+          - configMapRef:
+              name: {{ .Values.secretConfigPointer.name }}
+          - secretRef:
+              name: {{ .Values.secretConfigPointer.secret }}
 {{- end }}
         name: {{ .Values.appName }}
       {{- if .Values.containers.securityContext }}
