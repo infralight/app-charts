@@ -84,7 +84,6 @@ clusterRole:
       resources: ['jobs']
       verbs: ['get', 'list', 'watch', 'create', 'delete']
     # Add more rules as needed
-
 role:
   create: false
   rules: {}
