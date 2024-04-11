@@ -6,7 +6,9 @@ metadata:
 rules:
 {{- range $index, $rule := .Values.clusterRole.rules }}
   - apiGroups:
-{{ toYaml $rule.apiGroups | indent 6 }}
+{{- range $apiGroupIndex, $apiGroup := $rule.apiGroups }}
+      {{ if eq $apiGroup "" }}- ''{{ else }}- {{ $apiGroup }}{{ end }}
+{{- end }}
     resources:
 {{ toYaml $rule.resources | indent 6 }}
     verbs:
