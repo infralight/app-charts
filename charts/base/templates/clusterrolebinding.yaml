@@ -2,8 +2,8 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-{{- if .Values.clusterRole.customName }}
-  name: {{ .Values.clusterRole.customName }}
+{{- if .Values.clusterRoleBinding.customName }}
+  name: {{ .Values.clusterRoleBinding.customName }}
 {{- else }}
   name: {{ .Values.appName }}
 {{- end }}
