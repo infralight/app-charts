@@ -4,17 +4,12 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: {{ .Values.appName }}
 rules:
+{{- range $index, $rule := .Values.clusterRole.rules }}
   - apiGroups:
-      - ''
-      - "batch"
+{{ toYaml $rule.apiGroups | indent 6 }}
     resources:
-      - '*'
+{{ toYaml $rule.resources | indent 6 }}
     verbs:
-      - get
-      - list
-      - watch
-      - create
-      - patch
-      - update
-      - delete
+{{ toYaml $rule.verbs | indent 6 }}
+{{- end }}
 {{- end }}
