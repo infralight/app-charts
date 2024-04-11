@@ -74,12 +74,19 @@ service:
   type: NodePort
   servicePort: 7500
   targetPort: 80
+clusterRoleBinding:
+  customName: ""
 clusterRole:
   create: false
+  rules:
+    - apiGroups: ['batch']
+      resources: ['jobs']
+      verbs: ['get', 'list', 'watch', 'create', 'delete']
+    # Add more rules as needed
+
 role:
   create: false
   rules: {}
-
 #auth0:
 #  fireflyDomain: ""
 #  providerDomain: ""
