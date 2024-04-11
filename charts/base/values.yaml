@@ -79,6 +79,7 @@ clusterRole:
 role:
   create: false
   rules: {}
+
 #auth0:
 #  fireflyDomain: ""
 #  providerDomain: ""
