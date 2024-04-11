@@ -5,17 +5,17 @@ kind: ScaledObject
 metadata:
   name: {{ .Values.appName }}-sqs-scaledobject
 spec:
-  cooldownPeriod: {{ .Values.keda.config.cooldownPeriod }}
+  cooldownPeriod: {{ .Values.keda.cooldownPeriod }}
   fallback:
-    failureThreshold: {{ .Values.keda.config.fallback.failureThreshold }}
-    replicas: {{ .Values.keda.config.fallback.replicas }}
-  idleReplicaCount: {{ .Values.keda.config.idleReplicaCount }}
-  maxReplicaCount: {{ .Values.keda.config.maxReplicaCount }}
-  minReplicaCount: {{ .Values.keda.config.minReplicaCount }}
-  pollingInterval: {{ .Values.keda.config.pollingInterval }}
+    failureThreshold: {{ .Values.keda.fallback.failureThreshold }}
+    replicas: {{ .Values.keda.fallback.replicas }}
+  idleReplicaCount: {{ .Values.keda.idleReplicaCount }}
+  maxReplicaCount: {{ .Values.keda.maxReplicaCount }}
+  minReplicaCount: {{ .Values.keda.minReplicaCount }}
+  pollingInterval: {{ .Values.keda.pollingInterval }}
   scaleTargetRef:
-    apiVersion: {{ .Values.keda.config.apiVersion }}
-    kind: {{ .Values.keda.config.kind }}
+    apiVersion: apps/v1
+    kind: {{ .Values.keda.kind }}
     name: {{ .Values.appName }}
   ScaleTargetKind: 
   triggers:
