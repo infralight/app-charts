@@ -243,7 +243,11 @@ spec:
           - secretRef:
               name: {{ .Values.secretConfigPointer.secret }}
 {{- end }}
+        {{ if .Values.containers.name }}
+        name: {{ .Values.containers.name }}
+        {{ else }}
         name: {{ .Values.appName }}
+        {{ end }}
       {{- if .Values.containers.securityContext }}
         securityContext: 
 {{- toYaml .Values.containers.securityContext | nindent 10 }}
