@@ -101,17 +101,43 @@ spec:
 {{- if .Values.configMaps }}
 {{- if .Values.externalsecret }}
         envFrom:
+{{- if .Values.configMapInclusion }}
+{{- $excluded := .Values.configMapInclusion.exclude }}
+{{- $included := .Values.configMapInclusion.include }}
+{{- range .Values.configMaps }}
+{{- if or (eq (len $excluded) 0) (not (contains $excluded .name)) }}
+{{- if or (eq (len $included) 0) (contains $included .name) }}
+          - configMapRef:
+              name: {{ .name }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- else }}
 {{- range .Values.configMaps }}
           - configMapRef:
               name: {{ .name }}
+{{- end }}
 {{- end }}
           - secretRef:
               name: {{ .Values.externalsecret.targetname }}
 {{- else }}
         envFrom:
+{{- if .Values.configMapInclusion }}
+{{- $excluded := .Values.configMapInclusion.exclude }}
+{{- $included := .Values.configMapInclusion.include }}
+{{- range .Values.configMaps }}
+{{- if or (eq (len $excluded) 0) (not (contains $excluded .name)) }}
+{{- if or (eq (len $included) 0) (contains $included .name) }}
+          - configMapRef:
+              name: {{ .name }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- else }}
 {{- range .Values.configMaps }}
           - configMapRef:
               name: {{ .name }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- else if .Values.externalsecret }}
@@ -219,17 +245,43 @@ spec:
 {{- if .Values.configMaps }}
 {{- if .Values.externalsecret }}
         envFrom:
+{{- if .Values.configMapInclusion }}
+{{- $excluded := .Values.configMapInclusion.exclude }}
+{{- $included := .Values.configMapInclusion.include }}
+{{- range .Values.configMaps }}
+{{- if or (eq (len $excluded) 0) (not (contains $excluded .name)) }}
+{{- if or (eq (len $included) 0) (contains $included .name) }}
+          - configMapRef:
+              name: {{ .name }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- else }}
 {{- range .Values.configMaps }}
           - configMapRef:
               name: {{ .name }}
+{{- end }}
 {{- end }}
           - secretRef:
               name: {{ .Values.externalsecret.targetname }}
 {{- else }}
         envFrom:
+{{- if .Values.configMapInclusion }}
+{{- $excluded := .Values.configMapInclusion.exclude }}
+{{- $included := .Values.configMapInclusion.include }}
+{{- range .Values.configMaps }}
+{{- if or (eq (len $excluded) 0) (not (contains $excluded .name)) }}
+{{- if or (eq (len $included) 0) (contains $included .name) }}
+          - configMapRef:
+              name: {{ .name }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- else }}
 {{- range .Values.configMaps }}
           - configMapRef:
               name: {{ .name }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- else if .Values.externalsecret }}
