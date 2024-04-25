@@ -79,7 +79,7 @@ spec:
 {{- end }}
 {{- if .Values.initContainers }}
       initContainers:
-      - image: "{{ .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.initContainers.repository }}:{{ .Values.initContainers.tag }}"
+      - image: "{{ .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.containers.repository }}:{{ if .Values.containers.tag }}{{ .Values.containers.tag }}{{ else }}{{ .Values.tag }}{{ end }}"
 {{- if .Values.initContainers.args }}
         args:
     {{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.args "context" $ ) | nindent 10 }}
