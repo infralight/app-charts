@@ -51,19 +51,19 @@ spec:
             imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
             {{- if .Values.containers.command }}
             command:
-              {{- include "base.tplvalues.render" ( dict "value" .Values.containers.command "context" $ ) | nindent 10 }}
+              {{- include "base.tplvalues.render" ( dict "value" .Values.containers.command "context" $ ) | nindent 14 }}
             {{- end }}
             {{- if .Values.containers.args }}
             args:
-              {{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 10 }}
+              {{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 14 }}
             {{- end }}
             {{- if .Values.containers.ports }}
             ports:
-              {{- include "base.tplvalues.render" (dict "value" .Values.containers.ports "context" $) | nindent 10 }}
+              {{- include "base.tplvalues.render" (dict "value" .Values.containers.ports "context" $) | nindent 14 }}
             {{- end }}
             {{- if .Values.containers.env }}
             env:
-              {{- include "base.tplvalues.render" (dict "value" .Values.containers.env "context" $) | nindent 10 }}
+              {{- include "base.tplvalues.render" (dict "value" .Values.containers.env "context" $) | nindent 14 }}
             {{- end }}
             {{- if .Values.configMaps }}
             {{- if .Values.externalsecret }}
