@@ -49,6 +49,14 @@ spec:
           containers:
           - image: "{{ trimPrefix "_" .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ ne .Values.ecrAppName ""  | ternary .Values.ecrAppName .Values.appName }}:{{ .Values.tag }}"
             imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
+            {{- if .Values.containers.command }}
+            command:
+              {{- include "base.tplvalues.render" ( dict "value" .Values.containers.command "context" $ ) | nindent 10 }}
+            {{- end }}
+            {{- if .Values.containers.args }}
+            args:
+              {{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 10 }}
+            {{- end }}
             {{- if .Values.containers.ports }}
             ports:
               {{- include "base.tplvalues.render" (dict "value" .Values.containers.ports "context" $) | nindent 10 }}
