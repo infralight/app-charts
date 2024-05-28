@@ -26,6 +26,9 @@ metadata:
     external-dns.alpha.kubernetes.io/aws-geolocation-country-code: '*'	
     external-dns.alpha.kubernetes.io/set-identifier: '{{ $ingress.setidentifier }}'
     {{- end }}
+    {{- with $ingress.extraAnnotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
     kubernetes.io/ingress.class: alb
     kubernetes.io/tls-acme: 'true'
   labels:
