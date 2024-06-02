@@ -6,7 +6,11 @@ metadata:
     app.kubernetes.io/name: {{ .Values.appName }}
   name: {{ .Values.appName }}
 spec:
-  schedule: "{{ .Values.CronJob.schedule }}"
+  schedule: {{ .Values.CronJob.schedule | quote }}
+  suspend: {{ .Values.CronJob.suspend | default false }}
+  concurrencyPolicy: {{ .Values.CronJob.concurrencyPolicy | default "Allow" | quote }}
+  failedJobsHistoryLimit: {{ .Values.CronJob.failedJobsHistoryLimit | default 1 }}
+  successfulJobsHistoryLimit: {{ .Values.CronJob.successfulJobsHistoryLimit | default 3 }}
   jobTemplate:
     spec:
       template:
