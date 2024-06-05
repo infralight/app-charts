@@ -4,6 +4,8 @@ kind: ServiceMonitor
 metadata:
   name: {{ .Values.appName }}-metrics
   namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName }}
 spec:
   endpoints:
 {{- toYaml .Values.serviceMonitor.data | nindent 4 }}
@@ -21,6 +23,8 @@ kind: Service
 metadata:
   name: {{ .Values.appName }}-metrics
   namespace: {{ .Values.namespace }}
+  labels:
+    app.kubernetes.io/name: {{ .Values.appName }}
 spec:
   ports:
     - port: {{ .Values.metricsService.servicePort }}

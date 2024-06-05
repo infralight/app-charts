@@ -10,7 +10,6 @@ metadata:
 {{- end }}
   namespace: {{ .Values.namespace }}
   labels:
-    app.kubernetes.io/instance: {{ .Values.appName }}
     app.kubernetes.io/name: {{ .Values.appName }}
 spec:
   ports:
