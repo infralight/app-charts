@@ -36,6 +36,12 @@ spec:
           nodeSelector:
 {{- toYaml .Values.nodeSelector | nindent 12 }}
           {{- end }}
+        {{- if .Values.volumesSecret }}
+          volumes:
+            - name: {{ .Values.volumesSecret.name }}
+              secret:
+                secretName: {{ .Values.volumesSecret.secret.secretName }}
+        {{- end }}
           restartPolicy: {{ .Values.restartPolicy }}
           {{- if .Values.tolerations }}
           tolerations:
@@ -56,6 +62,10 @@ spec:
             {{- if .Values.containers.command }}
             command:
               {{- include "base.tplvalues.render" ( dict "value" .Values.containers.command "context" $ ) | nindent 14 }}
+            {{- end }}
+            {{- if .Values.containers.volumeMounts }}
+            volumeMounts:
+            {{- include "base.tplvalues.render" ( dict "value" .Values.containers.volumeMounts "context" $ ) | nindent 14 }}
             {{- end }}
             {{- if .Values.containers.args }}
             args:

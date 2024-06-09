@@ -55,7 +55,8 @@ restartPolicy: Always
 autoReloadConfig: false
 configmapName: ""
 containers: {}
-volumes: {}
+volumesSecret: {} # for volumes -> secret mount
+volumes: {} # for volumes -> for volumeClaimTemplates
 PersistentVolumeClaim: {}
 StorageClass: {}
 volumeClaimTemplates: {}
