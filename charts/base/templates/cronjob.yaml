@@ -16,6 +16,11 @@ spec:
       template:
         metadata:
           annotations:
+{{- if .Values.customAnnotations }}
+{{- range $key, $value := .Values.customAnnotations }}
+            {{ $key }}: {{ $value }}
+{{- end }}
+{{- end }}
             karpenter.sh/do-not-evict: 'true'
           labels:
             cron: {{ .Values.appName }}-cron

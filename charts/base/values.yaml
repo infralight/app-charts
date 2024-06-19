@@ -15,7 +15,7 @@ tolerations: {}
 livenessProbe: {}
 readinessProbe: {}
 secretConfigPointer: {}
-
+customAnnotations: {}
 firefly:
   clusterRole:
     states:
