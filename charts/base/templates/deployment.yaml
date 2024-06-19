@@ -41,7 +41,7 @@ spec:
         app.kubernetes.io/name: {{ .Values.appName }}
 {{- if .Values.customLabels }}
 {{- range $key, $value := .Values.customLabels }}
-        {{ $key }}: {{ $value }}
+        {{ $key }}: "{{ $value }}"
 {{- end }}
 {{- end }}
     spec:
