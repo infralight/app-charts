@@ -28,6 +28,11 @@ spec:
   template:
     metadata:
       annotations:
+{{- if .Values.customAnnotations }}
+{{- range $key, $value := .Values.customAnnotations }}
+        {{ $key }}: {{ $value }}
+{{- end }}
+{{- end }}
         {{- if .Values.autoReloadConfig }}
         checksum/configuration: {{ include (print $.Template.BasePath "/" "configmap.yaml" ) . | sha256sum }}
         {{- end }}

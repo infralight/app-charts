@@ -1,4 +1,4 @@
-useStatefulSet: false
+useStatefulSet: true
 useCronJob: false
 replicas: 1
 namespace: default
@@ -15,7 +15,7 @@ tolerations: {}
 livenessProbe: {}
 readinessProbe: {}
 secretConfigPointer: {}
-
+customAnnotations: {}
 firefly:
   clusterRole:
     states:
