@@ -1,4 +1,4 @@
-useStatefulSet: true
+useStatefulSet: false
 useCronJob: false
 replicas: 1
 namespace: default
