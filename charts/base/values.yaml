@@ -8,6 +8,7 @@ ingresses: {}
 serviceAccount:
   create: false
   name: "sa-name"
+tagsOverride: {}
 StatefulSet: {}
 affinity: {}
 nodeSelector: {}
@@ -64,6 +65,7 @@ volumeClaimTemplates: {}
 securityContext: {} 
 terminationGracePeriodSeconds: {}
 volumeClaimTemplate: {}
+configMaps: {}
 secret:
   enabled: false
 metricsService:
