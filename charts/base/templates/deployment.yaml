@@ -226,16 +226,12 @@ spec:
         terminationMessagePolicy: {{ .Values.customImage.terminationMessagePolicy }}
 {{- end }}
 {{- end }}
-{{- if .Values.containers.image }}
       - image: "{{ .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.containers.repository }}:{{ if .Values.containers.tag }}{{ .Values.containers.tag }}{{ else }}{{ .Values.tag }}{{ end }}"
-{{- end }}
 {{- if .Values.containers.args }}
         args:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 10 }}
 {{- end }}
-{{- if .Values.containers.imagePullPolicy }}
         imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
-{{- end }}
 {{- if .Values.containers.ports }}
         ports:
     {{- include "base.tplvalues.render" ( dict "value" .Values.containers.ports "context" $ ) | nindent 10 }}
