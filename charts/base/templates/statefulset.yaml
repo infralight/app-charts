@@ -228,7 +228,7 @@ spec:
         terminationMessagePolicy: {{ .Values.containers.terminationMessagePolicy }}
 {{- end }}
         volumeMounts:
-{{- include "base.tplvalues.render" ( dict "value" .Values.containers.volumeMounts "context" $ ) | nindent 10 }}
+    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.volumeMounts "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.containers.env }}
         env:
@@ -300,6 +300,7 @@ spec:
         livenessProbe:
 {{- toYaml .Values.livenessProbe | nindent 10 }}
 {{- end }}
+{{- if .Values.resources }}
         resources:
 {{- toYaml .Values.resources | nindent 10 }}
 {{- end }}
@@ -315,6 +316,5 @@ spec:
       resources:
         requests:
           storage: {{ .spec.resources.requests.storage }}
-{{- end }}
 {{- end }}
 {{- end }}
