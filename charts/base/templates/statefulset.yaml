@@ -165,31 +165,27 @@ spec:
 {{- end }}
       containers:
 {{- if .Values.customImage }}
-      - image: "{{ .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
+      - image: "{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
 {{- if .Values.customImage.args }}
         args:
-{{- include "base.tplvalues.render" ( dict "value" .Values.customImage.args "context" $ ) | nindent 10 }}
+    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.args "context" $ ) | nindent 10 }}
 {{- end }}
         name: {{ .Values.customImage.name }}
         imagePullPolicy: {{ .Values.customImage.imagePullPolicy }}
 {{- if .Values.customImage.ports }}
         ports:
-{{- include "base.tplvalues.render" ( dict "value" .Values.customImage.ports "context" $ ) | nindent 10 }}
+    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.ports "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.customImage.command }}
         command:
-{{- include "base.tplvalues.render" ( dict "value" .Values.customImage.command "context" $ ) | nindent 10 }}
-{{- end }}
-{{- if .Values.customImage.volumeMounts }}
-        volumeMounts:
-{{- include "base.tplvalues.render" ( dict "value" .Values.customImage.volumeMounts "context" $ ) | nindent 10 }}
+    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.command "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.customImage.env }}
         env:
-{{- include "base.tplvalues.render" ( dict "value" .Values.customImage.env "context" $ ) | nindent 10 }}
+    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.env "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.customImage.securityContext }}
-        securityContext:
+        securityContext: 
 {{- toYaml .Values.customImage.securityContext | nindent 10 }}
 {{- end }}
 {{- if .Values.customImage.readinessProbe }}
@@ -214,16 +210,16 @@ spec:
       - image: "{{ .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.containers.repository }}:{{ if .Values.containers.tag }}{{ .Values.containers.tag }}{{ else }}{{ .Values.tag }}{{ end }}"
 {{- if .Values.containers.args }}
         args:
-{{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 10 }}
+    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 10 }}
 {{- end }}
         imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
 {{- if .Values.containers.ports }}
         ports:
-{{- include "base.tplvalues.render" ( dict "value" .Values.containers.ports "context" $ ) | nindent 10 }}
+    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.ports "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.containers.command }}
         command:
-{{- include "base.tplvalues.render" ( dict "value" .Values.containers.command "context" $ ) | nindent 10 }}
+    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.command "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.containers.terminationMessagePath }}
         terminationMessagePath: {{ .Values.containers.terminationMessagePath }}
@@ -231,28 +227,53 @@ spec:
 {{- if .Values.containers.terminationMessagePolicy }}
         terminationMessagePolicy: {{ .Values.containers.terminationMessagePolicy }}
 {{- end }}
-{{- if .Values.containers.volumeMounts }}
         volumeMounts:
 {{- include "base.tplvalues.render" ( dict "value" .Values.containers.volumeMounts "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.containers.env }}
         env:
-{{- include "base.tplvalues.render" ( dict "value" .Values.containers.env "context" $ ) | nindent 10 }}
+    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.env "context" $ ) | nindent 10 }}
 {{- end }}
 {{- if .Values.configMaps }}
 {{- if .Values.externalsecret }}
         envFrom:
+{{- if .Values.configMapInclusion }}
+{{- $excluded := .Values.configMapInclusion.exclude }}
+{{- $included := .Values.configMapInclusion.include }}
+{{- range .Values.configMaps }}
+{{- if or (eq (len $excluded) 0) (not (contains $excluded .name)) }}
+{{- if or (eq (len $included) 0) (contains $included .name) }}
+          - configMapRef:
+              name: {{ .name }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- else }}
 {{- range .Values.configMaps }}
           - configMapRef:
               name: {{ .name }}
+{{- end }}
 {{- end }}
           - secretRef:
               name: {{ .Values.externalsecret.targetname }}
 {{- else }}
         envFrom:
+{{- if .Values.configMapInclusion }}
+{{- $excluded := .Values.configMapInclusion.exclude }}
+{{- $included := .Values.configMapInclusion.include }}
+{{- range .Values.configMaps }}
+{{- if or (eq (len $excluded) 0) (not (contains $excluded .name)) }}
+{{- if or (eq (len $included) 0) (contains $included .name) }}
+          - configMapRef:
+              name: {{ .name }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- else }}
 {{- range .Values.configMaps }}
           - configMapRef:
               name: {{ .name }}
+{{- end }}
 {{- end }}
 {{- end }}
 {{- else if .Values.externalsecret }}
@@ -268,7 +289,7 @@ spec:
 {{- end }}
         name: {{ if .Values.containers.name }}{{ .Values.containers.name }}{{ else }}{{ .Values.appName }}{{ end }}
       {{- if .Values.containers.securityContext }}
-        securityContext:
+        securityContext: 
 {{- toYaml .Values.containers.securityContext | nindent 10 }}
       {{- end }}
 {{- if .Values.readinessProbe }}
@@ -281,6 +302,7 @@ spec:
 {{- end }}
         resources:
 {{- toYaml .Values.resources | nindent 10 }}
+{{- end }}
 {{- if .Values.volumeClaimTemplates }}
   volumeClaimTemplates:
 {{- range .Values.volumeClaimTemplates }}
