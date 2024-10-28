@@ -4,51 +4,44 @@ kind: StatefulSet
 metadata:
   labels:
     app.kubernetes.io/name: {{ .Values.appName }}
-{{- if .Values.customLabels }}
-{{- range $key, $value := .Values.customLabels }}
-    {{ $key }}: {{ $value }}
-{{- end }}
-{{- end }}
-{{- if .Values.StatefulSet.customName }}
-  name: {{ .Values.StatefulSet.customName }}
-{{- else }}
-  name: {{ .Values.appName }}
-{{- end }}
+    {{- with .Values.customLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  name: 
+    {{- if .Values.StatefulSet.customName }}
+    {{ .Values.StatefulSet.customName }}
+    {{- else }}
+    {{ .Values.appName }}
+    {{- end }}
 spec:
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
       app.kubernetes.io/instance: {{ .Values.appName }}
       app.kubernetes.io/name: {{ .Values.appName }}
-{{- if .Values.customLabels }}
-{{- range $key, $value := .Values.customLabels }}
-      {{ $key }}: {{ $value }}
-{{- end }}
-{{- end }}
+      {{- with .Values.customLabels }}
+      {{- toYaml . | nindent 6 }}
+      {{- end }}
   template:
     metadata:
       annotations:
-{{- if .Values.customAnnotations }}
-{{- range $key, $value := .Values.customAnnotations }}
-        {{ $key }}: {{ $value }}
-{{- end }}
-{{- end }}
+        {{- with .Values.customAnnotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
         {{- if .Values.autoReloadConfig }}
-        checksum/configuration: {{ include (print $.Template.BasePath "/" "configmap.yaml" ) . | sha256sum }}
+        checksum/configuration: {{ include (print $.Template.BasePath "/" "configmap.yaml") . | sha256sum }}
         {{- end }}
       labels:
         app.kubernetes.io/instance: {{ .Values.appName }}
         app.kubernetes.io/name: {{ .Values.appName }}
-{{- if .Values.customLabels }}
-{{- range $key, $value := .Values.customLabels }}
-        {{ $key }}: {{ $value }}
-{{- end }}
-{{- end }}
+        {{- with .Values.customLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
-    {{- if .Values.serviceAccount.create }}
+      {{- if .Values.serviceAccount.create }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
-    {{- end }}
-    {{- if .Values.topologySpreadConstraints }}
+      {{- end }}
+      {{- if .Values.topologySpreadConstraints }}
       topologySpreadConstraints:
         - labelSelector:
             matchLabels:
@@ -57,264 +50,262 @@ spec:
           maxSkew: {{ .Values.topologySpreadConstraints.maxSkew }}
           topologyKey: {{ .Values.topologySpreadConstraints.topologyKey }}
           whenUnsatisfiable: {{ .Values.topologySpreadConstraints.whenUnsatisfiable }}
-    {{- end }}
-    {{- if .Values.volumes }}
+      {{- end }}
+      {{- if .Values.volumes }}
       volumes:
         - name: {{ .Values.volumes.name }}
           persistentVolumeClaim:
             claimName: {{ .Values.volumes.persistentVolumeClaim.name }}
-    {{- end }}
-    {{- if .Values.securityContext }}
+      {{- end }}
+      {{- if .Values.securityContext }}
       securityContext:
-{{- toYaml .Values.securityContext | nindent 8 }}
-    {{- end }}
-    {{- if .Values.terminationGracePeriodSeconds }}
+        {{- toYaml .Values.securityContext | nindent 8 }}
+      {{- end }}
+      {{- if .Values.terminationGracePeriodSeconds }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds.seconds }}
-    {{- end }}
-{{- if .Values.nodeSelector }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
       nodeSelector:
-{{- toYaml .Values.nodeSelector | nindent 8 }}
-{{- end }}
-{{- if .Values.tolerations }}
-      tolerations:
-{{- range .Values.tolerations }}
-        - effect: "{{ .effect }}"
-          key: "{{ .key }}"
-          operator: "{{ .operator }}"
-          value: "{{ .value }}"
-{{- end }}
-{{- end }}
-{{- if .Values.affinity }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
       affinity:
-{{- toYaml .Values.affinity | nindent 8 }}
-{{- end }}
-{{- if .Values.initContainers }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.initContainers }}
       initContainers:
       - image: "{{ .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.initContainers.repository }}:{{ .Values.initContainers.tag }}"
-{{- if .Values.initContainers.args }}
+        {{- if .Values.initContainers.args }}
         args:
-{{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.args "context" $ ) | nindent 10 }}
-{{- end }}
+          {{- include "base.tplvalues.render" (dict "value" .Values.initContainers.args "context" $) | nindent 10 }}
+        {{- end }}
         name: {{ .Values.initContainers.name }}
         imagePullPolicy: {{ .Values.initContainers.imagePullPolicy }}
-{{- if .Values.initContainers.ports }}
+        {{- if .Values.initContainers.ports }}
         ports:
-{{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.ports "context" $ ) | nindent 10 }}
-{{- end }}
-{{- if .Values.initContainers.command }}
+          {{- include "base.tplvalues.render" (dict "value" .Values.initContainers.ports "context" $) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.initContainers.command }}
         command:
-{{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.command "context" $ ) | nindent 10 }}
-{{- end }}
-{{- if .Values.initContainers.volumeMounts }}
+          {{- include "base.tplvalues.render" (dict "value" .Values.initContainers.command "context" $) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.initContainers.volumeMounts }}
         volumeMounts:
-{{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.volumeMounts "context" $ ) | nindent 10 }}
-{{- end }}
-{{- if .Values.initContainers.env }}
+          {{- include "base.tplvalues.render" (dict "value" .Values.initContainers.volumeMounts "context" $) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.initContainers.env }}
         env:
-{{- include "base.tplvalues.render" ( dict "value" .Values.initContainers.env "context" $ ) | nindent 10 }}
-{{- end }}
-{{- if .Values.configMaps }}
-{{- if .Values.externalsecret }}
+          {{- include "base.tplvalues.render" (dict "value" .Values.initContainers.env "context" $) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.configMaps }}
+          {{- if .Values.externalsecret }}
         envFrom:
-{{- range .Values.configMaps }}
+          {{- range .Values.configMaps }}
           - configMapRef:
               name: {{ .name }}
-{{- end }}
+          {{- end }}
           - secretRef:
               name: {{ .Values.externalsecret.targetname }}
-{{- else }}
+          {{- else }}
         envFrom:
-{{- range .Values.configMaps }}
+          {{- range .Values.configMaps }}
           - configMapRef:
               name: {{ .name }}
-{{- end }}
-{{- end }}
-{{- else if .Values.externalsecret }}
+          {{- end }}
+          {{- end }}
+        {{- else if .Values.externalsecret }}
         envFrom:
           - secretRef:
               name: {{ .Values.externalsecret.targetname }}
-{{- else if .Values.secretConfigPointer }}
+        {{- else if .Values.secretConfigPointer }}
         envFrom:
           - configMapRef:
               name: {{ .Values.secretConfigPointer.name }}
           - secretRef:
               name: {{ .Values.secretConfigPointer.secret }}
-{{- end }}
-{{- if .Values.initContainers.securityContext }}
+        {{- end }}
+        {{- if .Values.initContainers.securityContext }}
         securityContext:
-{{- toYaml .Values.initContainers.securityContext | nindent 10 }}
-{{- end }}
-{{- if .Values.initContainers.readinessProbe }}
+          {{- toYaml .Values.initContainers.securityContext | nindent 10 }}
+        {{- end }}
+        {{- if .Values.initContainers.readinessProbe }}
         readinessProbe:
-{{- toYaml .Values.initContainers.readinessProbe | nindent 10 }}
-{{- end }}
-{{- if .Values.initContainers.livenessProbe }}
+          {{- toYaml .Values.initContainers.readinessProbe | nindent 10 }}
+        {{- end }}
+        {{- if .Values.initContainers.livenessProbe }}
         livenessProbe:
-{{- toYaml .Values.initContainers.livenessProbe | nindent 10 }}
-{{- end }}
-{{- if .Values.initContainers.resources }}
+          {{- toYaml .Values.initContainers.livenessProbe | nindent 10 }}
+        {{- end }}
+        {{- if .Values.initContainers.resources }}
         resources:
-{{- toYaml .Values.initContainers.resources | nindent 10 }}
-{{- end }}
-{{- if .Values.initContainers.terminationMessagePath }}
+          {{- toYaml .Values.initContainers.resources | nindent 10 }}
+        {{- end }}
+        {{- if .Values.initContainers.terminationMessagePath }}
         terminationMessagePath: {{ .Values.initContainers.terminationMessagePath }}
-{{- end }}
-{{- if .Values.initContainers.terminationMessagePolicy }}
+        {{- end }}
+        {{- if .Values.initContainers.terminationMessagePolicy }}
         terminationMessagePolicy: {{ .Values.initContainers.terminationMessagePolicy }}
-{{- end }}
-{{- end }}
+        {{- end }}
+      {{- end }}
       containers:
-{{- if .Values.customImage }}
+      {{- if .Values.customImage }}
       - image: "{{ .Values.customImage.repository }}:{{ .Values.customImage.tag }}"
-{{- if .Values.customImage.args }}
+        {{- if .Values.customImage.args }}
         args:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.args "context" $ ) | nindent 10 }}
-{{- end }}
+          {{- include "base.tplvalues.render" (dict "value" .Values.customImage.args "context" $) | nindent 10 }}
+        {{- end }}
         name: {{ .Values.customImage.name }}
         imagePullPolicy: {{ .Values.customImage.imagePullPolicy }}
-{{- if .Values.customImage.ports }}
+        {{- if .Values.customImage.ports }}
         ports:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.ports "context" $ ) | nindent 10 }}
-{{- end }}
-{{- if .Values.customImage.command }}
+          {{- include "base.tplvalues.render" (dict "value" .Values.customImage.ports "context" $) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.customImage.command }}
         command:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.command "context" $ ) | nindent 10 }}
-{{- end }}
-{{- if .Values.customImage.env }}
+          {{- include "base.tplvalues.render" (dict "value" .Values.customImage.command "context" $) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.customImage.env }}
         env:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.customImage.env "context" $ ) | nindent 10 }}
-{{- end }}
-{{- if .Values.customImage.securityContext }}
+          {{- include "base.tplvalues.render" (dict "value" .Values.customImage.env "context" $) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.customImage.securityContext }}
         securityContext: 
-{{- toYaml .Values.customImage.securityContext | nindent 10 }}
-{{- end }}
-{{- if .Values.customImage.readinessProbe }}
+          {{- toYaml .Values.customImage.securityContext | nindent 10 }}
+        {{- end }}
+        {{- if .Values.customImage.readinessProbe }}
         readinessProbe:
-{{- toYaml .Values.customImage.readinessProbe | nindent 10 }}
-{{- end }}
-{{- if .Values.customImage.livenessProbe }}
+          {{- toYaml .Values.customImage.readinessProbe | nindent 10 }}
+        {{- end }}
+        {{- if .Values.customImage.livenessProbe }}
         livenessProbe:
-{{- toYaml .Values.customImage.livenessProbe | nindent 10 }}
-{{- end }}
-{{- if .Values.customImage.resources }}
+          {{- toYaml .Values.customImage.livenessProbe | nindent 10 }}
+        {{- end }}
+        {{- if .Values.customImage.resources }}
         resources:
-{{- toYaml .Values.customImage.resources | nindent 10 }}
-{{- end }}
-{{- if .Values.customImage.terminationMessagePath }}
+          {{- toYaml .Values.customImage.resources | nindent 10 }}
+        {{- end }}
+        {{- if .Values.customImage.terminationMessagePath }}
         terminationMessagePath: {{ .Values.customImage.terminationMessagePath }}
-{{- end }}
-{{- if .Values.customImage.terminationMessagePolicy }}
+        {{- end }}
+        {{- if .Values.customImage.terminationMessagePolicy }}
         terminationMessagePolicy: {{ .Values.customImage.terminationMessagePolicy }}
-{{- end }}
-{{- end }}
+        {{- end }}
+      {{- end }}
+
       - image: "{{ .Values.account }}.dkr.ecr.{{ .Values.region }}.amazonaws.com/{{ .Values.containers.repository }}:{{ if .Values.containers.tag }}{{ .Values.containers.tag }}{{ else }}{{ .Values.tag }}{{ end }}"
-{{- if .Values.containers.args }}
+        {{- if .Values.containers.args }}
         args:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.args "context" $ ) | nindent 10 }}
-{{- end }}
+          {{- include "base.tplvalues.render" (dict "value" .Values.containers.args "context" $) | nindent 10 }}
+        {{- end }}
         imagePullPolicy: {{ .Values.containers.imagePullPolicy }}
-{{- if .Values.containers.ports }}
+        {{- if .Values.containers.ports }}
         ports:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.ports "context" $ ) | nindent 10 }}
-{{- end }}
-{{- if .Values.containers.command }}
+          {{- include "base.tplvalues.render" (dict "value" .Values.containers.ports "context" $) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.containers.command }}
         command:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.command "context" $ ) | nindent 10 }}
-{{- end }}
-{{- if .Values.containers.terminationMessagePath }}
+          {{- include "base.tplvalues.render" (dict "value" .Values.containers.command "context" $) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.containers.terminationMessagePath }}
         terminationMessagePath: {{ .Values.containers.terminationMessagePath }}
-{{- end }}
-{{- if .Values.containers.terminationMessagePolicy }}
+        {{- end }}
+        {{- if .Values.containers.terminationMessagePolicy }}
         terminationMessagePolicy: {{ .Values.containers.terminationMessagePolicy }}
-{{- end }}
+        {{- end }}
+        {{- if .Values.containers.volumeMounts }}
         volumeMounts:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.volumeMounts "context" $ ) | nindent 10 }}
-{{- end }}
-{{- if .Values.containers.env }}
+          {{- include "base.tplvalues.render" (dict "value" .Values.containers.volumeMounts "context" $) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.containers.env }}
         env:
-    {{- include "base.tplvalues.render" ( dict "value" .Values.containers.env "context" $ ) | nindent 10 }}
-{{- end }}
-{{- if .Values.configMaps }}
-{{- if .Values.externalsecret }}
+          {{- include "base.tplvalues.render" (dict "value" .Values.containers.env "context" $) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.configMaps }}
+        {{- if .Values.externalsecret }}
         envFrom:
-{{- if .Values.configMapInclusion }}
-{{- $excluded := .Values.configMapInclusion.exclude }}
-{{- $included := .Values.configMapInclusion.include }}
-{{- range .Values.configMaps }}
-{{- if or (eq (len $excluded) 0) (not (contains $excluded .name)) }}
-{{- if or (eq (len $included) 0) (contains $included .name) }}
+          {{- if .Values.configMapInclusion }}
+          {{- $excluded := .Values.configMapInclusion.exclude }}
+          {{- $included := .Values.configMapInclusion.include }}
+          {{- range .Values.configMaps }}
+          {{- if or (eq (len $excluded) 0) (not (contains $excluded .name)) }}
+          {{- if or (eq (len $included) 0) (contains $included .name) }}
           - configMapRef:
               name: {{ .name }}
-{{- end }}
-{{- end }}
-{{- end }}
-{{- else }}
-{{- range .Values.configMaps }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- else }}
+          {{- range .Values.configMaps }}
           - configMapRef:
               name: {{ .name }}
-{{- end }}
-{{- end }}
+          {{- end }}
+          {{- end }}
           - secretRef:
               name: {{ .Values.externalsecret.targetname }}
-{{- else }}
+        {{- else }}
         envFrom:
-{{- if .Values.configMapInclusion }}
-{{- $excluded := .Values.configMapInclusion.exclude }}
-{{- $included := .Values.configMapInclusion.include }}
-{{- range .Values.configMaps }}
-{{- if or (eq (len $excluded) 0) (not (contains $excluded .name)) }}
-{{- if or (eq (len $included) 0) (contains $included .name) }}
+          {{- if .Values.configMapInclusion }}
+          {{- $excluded := .Values.configMapInclusion.exclude }}
+          {{- $included := .Values.configMapInclusion.include }}
+          {{- range .Values.configMaps }}
+          {{- if or (eq (len $excluded) 0) (not (contains $excluded .name)) }}
+          {{- if or (eq (len $included) 0) (contains $included .name) }}
           - configMapRef:
               name: {{ .name }}
-{{- end }}
-{{- end }}
-{{- end }}
-{{- else }}
-{{- range .Values.configMaps }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+          {{- else }}
+          {{- range .Values.configMaps }}
           - configMapRef:
               name: {{ .name }}
-{{- end }}
-{{- end }}
-{{- end }}
-{{- else if .Values.externalsecret }}
+          {{- end }}
+          {{- end }}
+          {{- end }}
+        {{- else if .Values.externalsecret }}
         envFrom:
           - secretRef:
               name: {{ .Values.externalsecret.targetname }}
-{{- else if .Values.secretConfigPointer }}
+        {{- else if .Values.secretConfigPointer }}
         envFrom:
           - configMapRef:
               name: {{ .Values.secretConfigPointer.name }}
           - secretRef:
               name: {{ .Values.secretConfigPointer.secret }}
-{{- end }}
+        {{- end }}
         name: {{ if .Values.containers.name }}{{ .Values.containers.name }}{{ else }}{{ .Values.appName }}{{ end }}
-      {{- if .Values.containers.securityContext }}
+        {{- if .Values.containers.securityContext }}
         securityContext: 
-{{- toYaml .Values.containers.securityContext | nindent 10 }}
-      {{- end }}
-{{- if .Values.readinessProbe }}
+          {{- toYaml .Values.containers.securityContext | nindent 10 }}
+        {{- end }}
+        {{- if .Values.readinessProbe }}
         readinessProbe:
-{{- toYaml .Values.readinessProbe | nindent 10 }}
-{{- end }}
-{{- if .Values.livenessProbe }}
+          {{- toYaml .Values.readinessProbe | nindent 10 }}
+        {{- end }}
+        {{- if .Values.livenessProbe }}
         livenessProbe:
-{{- toYaml .Values.livenessProbe | nindent 10 }}
-{{- end }}
-{{- if .Values.resources }}
+          {{- toYaml .Values.livenessProbe | nindent 10 }}
+        {{- end }}
+        {{- if .Values.resources }}
         resources:
-{{- toYaml .Values.resources | nindent 10 }}
-{{- end }}
-{{- if .Values.volumeClaimTemplates }}
+          {{- toYaml .Values.resources | nindent 10 }}
+        {{- end }}
+  {{- if .Values.volumeClaimTemplates }}
   volumeClaimTemplates:
-{{- range .Values.volumeClaimTemplates }}
-  - metadata:
-      name: {{ .metadata.name }}
-    spec:
-      accessModes:
-        - {{ index .spec.accessModes 0 | quote }}
-      storageClassName: {{ .spec.storageClassName | quote }}
-      resources:
-        requests:
-          storage: {{ .spec.resources.requests.storage }}
-{{- end }}
+    {{- range .Values.volumeClaimTemplates }}
+    - metadata:
+        name: {{ .metadata.name }}
+      spec:
+        accessModes:
+          - {{ index .spec.accessModes 0 | quote }}
+        storageClassName: {{ .spec.storageClassName | quote }}
+        resources:
+          requests:
+            storage: {{ .spec.resources.requests.storage }}
+    {{- end }}
+  {{- end }}
 {{- end }}
