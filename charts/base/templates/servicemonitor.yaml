@@ -6,6 +6,7 @@ metadata:
   namespace: {{ .Values.namespace }}
   labels:
     app.kubernetes.io/name: {{ .Values.appName }}
+    app.kubernetes.io/component: metrics
 spec:
   endpoints:
 {{- toYaml .Values.serviceMonitor.data | nindent 4 }}
@@ -15,6 +16,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ .Values.appName }}
+      app.kubernetes.io/component: metrics
 {{- end }}
 ---
 {{- if eq .Values.metricsService.enabled true -}}
@@ -25,6 +27,7 @@ metadata:
   namespace: {{ .Values.namespace }}
   labels:
     app.kubernetes.io/name: {{ .Values.appName }}
+    app.kubernetes.io/component: metrics
 spec:
   ports:
     - port: {{ .Values.metricsService.servicePort }}
